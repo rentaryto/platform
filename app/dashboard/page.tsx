@@ -1,0 +1,114 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { isAuthenticated } from "@/lib/auth";
+import { dashboardApi } from "@/lib/api";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { MobileNav } from "@/components/layout/MobileNav";
+import { StatsCards } from "@/components/dashboard/StatsCards";
+import { ApartmentCard } from "@/components/dashboard/ApartmentCard";
+import { PendingInvoices } from "@/components/dashboard/PendingInvoices";
+import { UpcomingReminders } from "@/components/dashboard/UpcomingReminders";
+import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
+
+export default function DashboardPage() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.replace("/login");
+    }
+  }, [router]);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: dashboardApi.get,
+    enabled: isAuthenticated(),
+  });
+
+  // Verificar si mostrar onboarding
+  useEffect(() => {
+    if (data && !isLoading) {
+      const hasProperties = data.apartments.length > 0;
+      const onboardingCompleted = localStorage.getItem("rentaryto_onboarding_completed") === "true";
+
+      if (!hasProperties && !onboardingCompleted) {
+        setShowOnboarding(true);
+      }
+    }
+  }, [data, isLoading]);
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+  };
+
+  if (!isAuthenticated()) return null;
+
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar />
+      <main className="flex-1 p-4 md:p-6 overflow-auto pb-20 md:pb-6">
+        <div className="max-w-6xl mx-auto space-y-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Resumen de tus alquileres
+            </p>
+          </div>
+
+          {isLoading && (
+            <div className="text-center py-12 text-muted-foreground">
+              Cargando...
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-md p-4">
+              Error al cargar los datos. Intenta de nuevo.
+            </div>
+          )}
+
+          {data && (
+            <>
+              <StatsCards
+                totalMonthlyIncome={data.totalMonthlyIncome}
+                totalMonthlyExpenses={data.totalMonthlyExpenses}
+                monthlyProfit={data.monthlyProfit}
+              />
+
+              <div>
+                <h2 className="text-lg font-semibold mb-3">Inmuebles</h2>
+                {data.apartments.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">No tienes inmuebles registrados.</p>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {data.apartments.map((apt) => (
+                      <ApartmentCard key={apt.id} {...apt} />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <PendingInvoices invoices={data.pendingInvoices} />
+                <UpcomingReminders reminders={data.upcomingReminders} />
+              </div>
+            </>
+          )}
+        </div>
+      </main>
+
+      {/* Onboarding Wizard */}
+      <OnboardingWizard
+        open={showOnboarding}
+        onComplete={handleOnboardingComplete}
+      />
+      <MobileNav />
+    </div>
+  );
+}

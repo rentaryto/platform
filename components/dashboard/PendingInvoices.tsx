@@ -1,0 +1,80 @@
+"use client";
+
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { documentsApi } from "@/lib/api";
+import { formatDate } from "@/lib/utils";
+import { FileText, Send } from "lucide-react";
+
+interface PendingInvoice {
+  id: string;
+  apartmentName: string;
+  fileName: string;
+  createdAt: string;
+}
+
+export function PendingInvoices({ invoices }: { invoices: PendingInvoice[] }) {
+  const queryClient = useQueryClient();
+  const [sending, setSending] = useState<string | null>(null);
+
+  const handleSend = async (id: string) => {
+    try {
+      setSending(id);
+      await documentsApi.send(id);
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    } catch (err) {
+      console.error("Error al enviar factura:", err);
+    } finally {
+      setSending(null);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <FileText className="h-4 w-4 text-orange-500" />
+          Facturas Pendientes
+          {invoices.length > 0 && (
+            <Badge variant="orange">{invoices.length}</Badge>
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {invoices.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">
+            No hay facturas pendientes de envío
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {invoices.map((invoice) => (
+              <div
+                key={invoice.id}
+                className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-100"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium truncate">{invoice.fileName}</p>
+                  <p className="text-xs text-muted-foreground">{invoice.apartmentName}</p>
+                  <p className="text-xs text-muted-foreground">{formatDate(invoice.createdAt)}</p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="ml-2 flex-shrink-0 border-orange-300 text-orange-700 hover:bg-orange-100"
+                  onClick={() => handleSend(invoice.id)}
+                  disabled={sending === invoice.id}
+                >
+                  <Send className="h-3 w-3 mr-1" />
+                  {sending === invoice.id ? "Enviando..." : "Enviar"}
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
