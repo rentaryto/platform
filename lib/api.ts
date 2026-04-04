@@ -1,4 +1,3 @@
-import { getToken, logout } from "./auth";
 import type {
   User,
   DashboardData,
