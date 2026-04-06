@@ -47,15 +47,11 @@ export function Step2Tenant({ propertyId, onNext, onBack, onSkip }: Props) {
       setLoading(true);
       setError(null);
 
-      // Crear inquilino y asignarlo
-      const tenant = await tenantsApi.create({
+      // Crear inquilino, asignarlo al piso y crear reminder IPC en una sola llamada
+      await tenantsApi.assign(propertyId, {
         name: data.name,
         email: data.email,
         phone: data.phone,
-      });
-
-      await tenantsApi.assignExisting(propertyId, {
-        tenantId: tenant.id,
         leaseStartDate: data.leaseStartDate,
       });
 
