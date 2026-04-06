@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { authApi } from "@/lib/api";
-import { setUser } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +25,6 @@ const signupSchema = z.object({
 type SignupForm = z.infer<typeof signupSchema>;
 
 export default function SignupPage() {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
@@ -46,18 +43,10 @@ export default function SignupPage() {
       setLoading(true);
       setError(null);
       setUserEmail(data.email);
-      const result: any = await authApi.signup(data.email, data.password, data.name);
+      await authApi.signup(data.email, data.password, data.name);
 
-      // If user needs email confirmation, show message
-      if (result.emailConfirmationRequired) {
-        setEmailSent(true);
-      } else if (result.user) {
-        // User is already confirmed, redirect to dashboard
-        setUser(result.user);
-        router.replace("/dashboard");
-      } else {
-        setError("Error al crear cuenta");
-      }
+      // Always show the "check your email" screen — no auto-login ever
+      setEmailSent(true);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Error al registrarse";
       setError(errorMessage);

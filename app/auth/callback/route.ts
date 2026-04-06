@@ -7,9 +7,15 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = await createClient()
+
+    // Exchanges the code — this confirms the email in Supabase
     await supabase.auth.exchangeCodeForSession(code)
+
+    // Sign out immediately so the user must log in manually.
+    // We never auto-login after email confirmation.
+    await supabase.auth.signOut()
   }
 
-  // Redirect to login page after confirmation
+  // Redirect to login with a flag so the page can show a success banner
   return NextResponse.redirect(`${requestUrl.origin}/login?confirmed=true`)
 }
