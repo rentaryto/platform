@@ -66,9 +66,11 @@ function LoginForm() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-2">
-            <div className="bg-blue-600 p-3 rounded-full">
-              <Building2 className="h-8 w-8 text-white" />
-            </div>
+            <Link href="/">
+              <div className="bg-blue-600 p-3 rounded-full hover:bg-blue-700 transition-colors cursor-pointer">
+                <Building2 className="h-8 w-8 text-white" />
+              </div>
+            </Link>
           </div>
           <CardTitle className="text-2xl font-bold">Rentaryto</CardTitle>
           <CardDescription>Gestión de alquileres</CardDescription>
