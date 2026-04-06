@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Step1Property } from "./Step1Property";
 import { Step2Tenant } from "./Step2Tenant";
-import { Step3Reminders } from "./Step3Reminders";
+import { Step3Expenses } from "./Step3Expenses";
 
 interface Props {
   open: boolean;
@@ -85,7 +85,7 @@ export function OnboardingWizard({ open, onComplete }: Props) {
             />
           )}
           {currentStep === 3 && propertyId && (
-            <Step3Reminders
+            <Step3Expenses
               propertyId={propertyId}
               onComplete={handleStep3Complete}
               onBack={handleBack}
