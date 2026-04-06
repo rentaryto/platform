@@ -1,14 +1,9 @@
-import { createClient } from '@/lib/supabase-route-handler'
+import { createClient } from '@/lib/supabase-server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
-  const { supabase, response } = await createClient(request)
+  const supabase = await createClient()
   await supabase.auth.signOut()
 
-  return NextResponse.json(
-    { success: true },
-    {
-      headers: response.headers,
-    }
-  )
+  return NextResponse.json({ success: true })
 }

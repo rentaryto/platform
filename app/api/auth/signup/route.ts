@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase-route-handler'
+import { createClient } from '@/lib/supabase-server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { isValidEmail, sanitizeString } from '@/lib/validation'
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     // Sanitize name
     const sanitizedName = sanitizeString(name, 100)
 
-    const { supabase, response } = await createClient(request)
+    const supabase = await createClient()
 
     // Create user in Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -66,53 +66,28 @@ export async function POST(request: NextRequest) {
             email: authData.user.email,
           },
         },
-        {
-          headers: response.headers,
-        }
       )
     }
 
-    // Create user record in database (only if email is auto-confirmed)
-    let user
-    try {
-      user = await prisma.user.create({
-        data: {
-          id: authData.user.id,
-          email,
-          password: '', // Password is managed by Supabase Auth
-          name: sanitizedName,
-        },
-      })
-    } catch (dbError: any) {
-      console.error('Database error creating user:', dbError)
-
-      // If user already exists in DB, fetch it
-      if (dbError.code === 'P2002') {
-        user = await prisma.user.findUnique({
-          where: { id: authData.user.id },
-        })
-
-        if (!user) {
-          throw new Error('Error creando usuario en base de datos')
-        }
-      } else {
-        throw new Error('Error creando usuario en base de datos')
-      }
-    }
-
-    // Return response with cookies set
-    return NextResponse.json(
-      {
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        },
+    // Create or fetch user record in database (only if email is auto-confirmed)
+    const user = await prisma.user.upsert({
+      where: { id: authData.user.id },
+      update: {}, // User already exists, nothing to update
+      create: {
+        id: authData.user.id,
+        email,
+        password: '', // Password is managed by Supabase Auth
+        name: sanitizedName,
       },
-      {
-        headers: response.headers,
-      }
-    )
+    })
+
+    return NextResponse.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    })
   } catch (error) {
     console.error('Signup error:', error)
     return NextResponse.json({ error: 'Error al registrar usuario' }, { status: 500 })

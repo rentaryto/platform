@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase-route-handler'
+import { createClient } from '@/lib/supabase-server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { isValidEmail } from '@/lib/validation'
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { supabase, response } = await createClient(request)
+    const supabase = await createClient()
 
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
@@ -65,13 +65,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Return response with cookies set
-    return NextResponse.json(
-      { user },
-      {
-        headers: response.headers,
-      }
-    )
+    return NextResponse.json({ user })
   } catch (error) {
     console.error('Login error:', error)
     return NextResponse.json({ error: 'Error al iniciar sesión' }, { status: 500 })

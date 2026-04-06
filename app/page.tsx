@@ -121,7 +121,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t mt-16 py-8">
         <div className="max-w-6xl mx-auto px-4 text-center text-gray-600 text-sm">
-          <p>© 2026 Rentaryto. Gestión de alquileres simplificada.</p>
+          <p>© 2026 Rentaryto. Gestión de alquileres simplificada. Contacto: info@rentaryto.com</p>
         </div>
       </footer>
     </div>
