@@ -67,13 +67,13 @@ export function Step1Property({ onNext, onSkip }: Props) {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label>Nombre del inmueble</Label>
-          <Input placeholder="Ej: Piso 1A, Valle Inclán Bajo..." {...register("name")} />
+          <Input placeholder="Ej: Piso 1A, Alberto Aguilera Bajo..." {...register("name")} />
           {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
         </div>
 
         <div className="space-y-2">
           <Label>Dirección completa</Label>
-          <Input placeholder="C/ Valle Inclán 1, Bajo, 41980 La Algaba" {...register("address")} />
+          <Input placeholder="C/ Alberto Aguilera 1, Bajo, 28015 Madrid" {...register("address")} />
           {errors.address && <p className="text-xs text-red-500">{errors.address.message}</p>}
         </div>
 
