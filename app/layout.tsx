@@ -6,8 +6,17 @@ import { Providers } from "@/components/providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Rentaryto",
+  title: {
+    default: "Rentaryto",
+    template: "%s | Rentaryto",
+  },
   description: "Gestión de alquileres para pequeños propietarios",
+  applicationName: "Rentaryto",
+  appleWebApp: {
+    capable: true,
+    title: "Rentaryto",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({

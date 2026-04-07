@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Building2, LayoutDashboard, Users, Home, FileText, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Home, FileText, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getUser, logout } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/logo";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -28,12 +29,7 @@ export function Sidebar() {
     <aside className="hidden md:flex w-64 sticky top-0 h-screen bg-gray-900 text-white flex-col overflow-y-auto">
       {/* Logo */}
       <div className="p-6 border-b border-gray-700">
-        <div className="flex items-center gap-3">
-          <div className="bg-blue-600 p-2 rounded-lg">
-            <Building2 className="h-5 w-5 text-white" />
-          </div>
-          <span className="text-lg font-bold">Rentaryto</span>
-        </div>
+        <Logo />
       </div>
 
       {/* Navigation */}
