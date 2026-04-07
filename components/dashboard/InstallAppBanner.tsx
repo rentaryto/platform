@@ -17,20 +17,26 @@ export function InstallAppBanner() {
   const [showInstructions, setShowInstructions] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Detectar si ya está instalada
+    // Detectar sistema operativo y móvil
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const iOS = /iphone|ipad|ipod/.test(userAgent);
+    const android = /android/.test(userAgent);
+    const mobile = iOS || android;
+
+    setIsIOS(iOS);
+    setIsAndroid(android);
+    setIsMobile(mobile);
+
+    // Solo mostrar en móvil, si no está instalada y no ha sido descartado
     const isInstalled = window.matchMedia("(display-mode: standalone)").matches;
     const bannerDismissed = localStorage.getItem("rentaryto_install_banner_dismissed");
 
-    if (!isInstalled && !bannerDismissed) {
+    if (mobile && !isInstalled && !bannerDismissed) {
       setShowBanner(true);
     }
-
-    // Detectar sistema operativo
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    setIsIOS(/iphone|ipad|ipod/.test(userAgent));
-    setIsAndroid(/android/.test(userAgent));
   }, []);
 
   const handleDismiss = () => {
@@ -46,35 +52,35 @@ export function InstallAppBanner() {
 
   return (
     <>
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 p-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-3 flex-1">
-            <div className="bg-blue-600 p-2 rounded-lg mt-1">
-              <Smartphone className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 mb-1">
+      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 p-3 sm:p-4">
+        <div className="flex items-start gap-3">
+          <div className="bg-blue-600 p-2 rounded-lg flex-shrink-0">
+            <Smartphone className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <h3 className="font-semibold text-sm sm:text-base text-gray-900">
                 Instala Rentaryto en tu móvil
               </h3>
-              <p className="text-sm text-gray-600 mb-3">
-                Accede más rápido a tus alquileres. Instala la app en tu pantalla de inicio.
-              </p>
-              <Button
-                size="sm"
-                onClick={handleShowInstructions}
-                className="bg-blue-600 hover:bg-blue-700"
+              <button
+                onClick={handleDismiss}
+                className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 -mt-1"
+                aria-label="Cerrar"
               >
-                Ver cómo instalar
-              </Button>
+                <X className="h-4 w-4 sm:h-5 sm:w-5" />
+              </button>
             </div>
+            <p className="text-xs sm:text-sm text-gray-600 mb-3">
+              Accede más rápido. Instala la app en tu pantalla de inicio.
+            </p>
+            <Button
+              size="sm"
+              onClick={handleShowInstructions}
+              className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm h-8 sm:h-9"
+            >
+              Ver cómo instalar
+            </Button>
           </div>
-          <button
-            onClick={handleDismiss}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-            aria-label="Cerrar"
-          >
-            <X className="h-5 w-5" />
-          </button>
         </div>
       </Card>
 

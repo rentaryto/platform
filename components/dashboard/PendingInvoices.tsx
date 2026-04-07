@@ -53,7 +53,7 @@ export function PendingInvoices({ invoices }: { invoices: PendingInvoice[] }) {
             {invoices.map((invoice) => (
               <div
                 key={invoice.id}
-                className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-100"
+                className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-orange-50 rounded-lg border border-orange-100"
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium truncate">{invoice.fileName}</p>
@@ -63,12 +63,12 @@ export function PendingInvoices({ invoices }: { invoices: PendingInvoice[] }) {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="ml-2 flex-shrink-0 border-orange-300 text-orange-700 hover:bg-orange-100"
+                  className="w-full sm:w-auto flex-shrink-0 border-orange-300 text-orange-700 hover:bg-orange-100"
                   onClick={() => handleSend(invoice.id)}
                   disabled={sending === invoice.id}
                 >
-                  <Send className="h-3 w-3 mr-1" />
-                  {sending === invoice.id ? "Enviando..." : "Enviar"}
+                  <Send className="h-3 w-3 sm:mr-1" />
+                  <span className="ml-1">{sending === invoice.id ? "Enviando..." : "Enviar"}</span>
                 </Button>
               </div>
             ))}

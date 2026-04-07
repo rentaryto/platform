@@ -133,7 +133,7 @@ export default function HaciendaPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1 p-4 md:p-6 overflow-auto pb-20 md:pb-6">
+      <main className="flex-1 p-4 md:p-6 overflow-auto pb-24 md:pb-6">
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Header */}
           <div className="space-y-4">

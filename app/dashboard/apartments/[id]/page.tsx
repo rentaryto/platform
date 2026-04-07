@@ -146,7 +146,7 @@ export default function ApartmentDetailPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1 p-4 md:p-6 overflow-auto pb-20 md:pb-6">
+      <main className="flex-1 p-4 md:p-6 overflow-auto pb-24 md:pb-6">
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Header */}
           <div className="flex items-center gap-3">
@@ -226,11 +226,11 @@ export default function ApartmentDetailPage() {
                         <div className="text-xs text-muted-foreground">
                           Desde {formatDate(apartment.currentTenant.leaseStartDate)}
                         </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => setAssignOpen(true)}>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <Button variant="outline" size="sm" onClick={() => setAssignOpen(true)} className="w-full sm:w-auto">
                             <Pencil className="h-3 w-3 mr-1" /> Cambiar
                           </Button>
-                          <Button variant="destructive" size="sm" onClick={handleRemoveTenant}>
+                          <Button variant="destructive" size="sm" onClick={handleRemoveTenant} className="w-full sm:w-auto">
                             Quitar Inquilino
                           </Button>
                         </div>
@@ -325,9 +325,9 @@ export default function ApartmentDetailPage() {
                         .filter(r => r.status === "pending")
                         .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
                         .map((rem) => (
-                          <div key={rem.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                          <div key={rem.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-lg border">
                             <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <span className="text-sm font-medium">{rem.title}</span>
                                 {rem.type === "auto_ipc" && (
                                   <Badge variant="warning">IPC</Badge>
@@ -338,23 +338,23 @@ export default function ApartmentDetailPage() {
                               )}
                               <p className="text-xs text-muted-foreground mt-1">{formatDate(rem.dueDate)}</p>
                             </div>
-                            <div className="flex gap-1 ml-2">
-                              <Button variant="ghost" size="icon" className="h-7 w-7"
+                            <div className="flex gap-1 justify-end sm:justify-start">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7"
                                 title="Editar"
                                 onClick={() => { setEditingReminder(rem); setReminderOpen(true); }}>
                                 <Pencil className="h-3 w-3" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-7 w-7 text-green-600"
+                              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-green-600"
                                 title="Marcar como hecho"
                                 onClick={() => handleReminderStatus(rem.id, "done")}>
                                 <CheckCircle className="h-3 w-3" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-400"
+                              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-gray-400"
                                 title="Descartar"
                                 onClick={() => handleReminderStatus(rem.id, "dismissed")}>
                                 <XCircle className="h-3 w-3" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500"
+                              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"
                                 onClick={() => handleDeleteReminder(rem.id)}>
                                 <Trash2 className="h-3 w-3" />
                               </Button>
@@ -398,11 +398,11 @@ export default function ApartmentDetailPage() {
                               </td>
                               <td className="py-2 text-right">
                                 <div className="flex justify-end gap-1">
-                                  <Button variant="ghost" size="icon" className="h-7 w-7"
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7"
                                     onClick={() => { setEditingExpense(exp); setRecurringOpen(true); }}>
                                     <Pencil className="h-3 w-3" />
                                   </Button>
-                                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500"
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"
                                     onClick={() => handleDeleteRecurring(exp.id)}>
                                     <Trash2 className="h-3 w-3" />
                                   </Button>
@@ -446,7 +446,7 @@ export default function ApartmentDetailPage() {
                               <td className="py-2 text-right font-medium text-red-600">{formatEuro(exp.amount)}</td>
                               <td className="py-2 text-center text-muted-foreground">{formatDate(exp.date)}</td>
                               <td className="py-2 text-right">
-                                <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500"
+                                <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"
                                   onClick={() => handleDeleteUnexpected(exp.id)}>
                                   <Trash2 className="h-3 w-3" />
                                 </Button>
@@ -478,30 +478,30 @@ export default function ApartmentDetailPage() {
                           <h3 className="text-sm font-semibold text-gray-700 mb-2">{group.label}</h3>
                           <div className="space-y-2">
                             {group.documents.map((doc) => (
-                              <div key={doc.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                              <div key={doc.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-lg border">
                                 <div className="min-w-0 flex-1">
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex items-center gap-2 flex-wrap">
                                     <Badge variant="secondary">{documentTypeLabels[doc.type]}</Badge>
                                     <span className="text-sm font-medium truncate">{doc.fileName}</span>
                                   </div>
                                   {doc.description && (
                                     <p className="text-xs text-muted-foreground mt-1">{doc.description}</p>
                                   )}
-                                  <div className="flex items-center gap-2 mt-1">
+                                  <div className="flex items-center gap-2 mt-1 flex-wrap">
                                     <Badge variant={doc.sendStatus === "sent" ? "success" : doc.sendStatus === "pending" ? "orange" : "muted"}>
                                       {sendStatusLabels[doc.sendStatus]}
                                     </Badge>
                                     <span className="text-xs text-muted-foreground">{formatDate(doc.createdAt)}</span>
                                   </div>
                                 </div>
-                                <div className="flex gap-1 ml-2">
+                                <div className="flex gap-1 justify-end sm:justify-start">
                                   {doc.type === "invoice" && doc.sendStatus !== "sent" && apartment.currentTenant && (
-                                    <Button variant="outline" size="icon" className="h-7 w-7"
+                                    <Button variant="outline" size="icon" className="h-8 w-8 sm:h-7 sm:w-7"
                                       onClick={() => handleSendDocument(doc.id)}>
                                       <Send className="h-3 w-3" />
                                     </Button>
                                   )}
-                                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500"
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"
                                     onClick={() => handleDeleteDocument(doc.id)}>
                                     <Trash2 className="h-3 w-3" />
                                   </Button>
