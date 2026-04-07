@@ -535,9 +535,11 @@ export default function ApartmentDetailPage() {
                                         <p className="text-xs text-muted-foreground mt-1">{doc.description}</p>
                                       )}
                                       <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                        <Badge variant={doc.sendStatus === "sent" ? "success" : doc.sendStatus === "pending" ? "orange" : "muted"}>
-                                          {sendStatusLabels[doc.sendStatus]}
-                                        </Badge>
+                                        {doc.sendStatus !== "not_applicable" && (
+                                          <Badge variant={doc.sendStatus === "sent" ? "success" : "orange"}>
+                                            {sendStatusLabels[doc.sendStatus]}
+                                          </Badge>
+                                        )}
                                         <span className="text-xs text-muted-foreground">{formatDate(doc.createdAt)}</span>
                                       </div>
                                     </div>
