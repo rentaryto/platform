@@ -99,7 +99,6 @@ model Reminder {
   title       String
   description String?
   dueDate     DateTime
-  type        String    @default("custom")
   status      String    @default("pending")
   createdAt   DateTime  @default(now())
 }
