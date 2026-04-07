@@ -12,6 +12,7 @@ import { ApartmentCard } from "@/components/dashboard/ApartmentCard";
 import { PendingInvoices } from "@/components/dashboard/PendingInvoices";
 import { UpcomingReminders } from "@/components/dashboard/UpcomingReminders";
 import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
+import { InstallAppBanner } from "@/components/dashboard/InstallAppBanner";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -75,6 +76,8 @@ export default function DashboardPage() {
 
           {data && (
             <>
+              <InstallAppBanner />
+
               <StatsCards
                 totalMonthlyIncome={data.totalMonthlyIncome}
                 totalMonthlyExpenses={data.totalMonthlyExpenses}

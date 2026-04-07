@@ -12,10 +12,17 @@ export const metadata: Metadata = {
   },
   description: "Gestión de alquileres para pequeños propietarios",
   applicationName: "Rentaryto",
+  themeColor: "#2563eb",
   appleWebApp: {
     capable: true,
     title: "Rentaryto",
     statusBarStyle: "default",
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
   },
 };
 
