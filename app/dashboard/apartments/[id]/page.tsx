@@ -110,6 +110,15 @@ export default function ApartmentDetailPage() {
     queryClient.invalidateQueries({ queryKey: ["dashboard"] });
   };
 
+  const handleDownloadDocument = async (docId: string) => {
+    try {
+      const { url } = await documentsApi.getSignedUrl(docId);
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error('Error downloading document:', error);
+    }
+  };
+
   const handleDeleteDocument = (docId: string) => {
     setConfirmDialog({
       open: true,
@@ -345,9 +354,6 @@ export default function ApartmentDetailPage() {
                                   <span className={`text-sm font-medium ${isDone ? "line-through text-gray-500" : ""}`}>
                                     {rem.title}
                                   </span>
-                                  {rem.type === "auto_ipc" && (
-                                    <Badge variant="warning">IPC</Badge>
-                                  )}
                                   {isDone && (
                                     <Badge variant="success">Hecho</Badge>
                                   )}
@@ -541,7 +547,7 @@ export default function ApartmentDetailPage() {
                                       variant="outline"
                                       size="icon"
                                       className="h-8 w-8 sm:h-7 sm:w-7"
-                                      onClick={() => window.open(doc.fileUrl, '_blank')}
+                                      onClick={() => handleDownloadDocument(doc.id)}
                                       title="Descargar"
                                     >
                                       <Download className="h-3 w-3" />

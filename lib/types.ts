@@ -55,7 +55,6 @@ export interface Reminder {
   title: string;
   description?: string;
   dueDate: string;
-  type: "auto_ipc" | "custom";
   status: "pending" | "done" | "dismissed";
   createdAt?: string;
 }

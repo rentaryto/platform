@@ -105,7 +105,6 @@ export async function GET(request: NextRequest) {
       apartmentName: rem.apartment.name,
       title: rem.title,
       dueDate: rem.dueDate,
-      type: rem.type,
     })),
   })
 }

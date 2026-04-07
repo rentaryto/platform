@@ -71,7 +71,6 @@ export async function POST(
         title,
         description: description || null,
         dueDate: new Date(dueDate),
-        type: 'custom',
         status: 'pending',
       },
     })

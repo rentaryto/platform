@@ -205,6 +205,9 @@ export const documentsApi = {
       method: "POST",
     });
   },
+  getSignedUrl(id: string) {
+    return apiFetch<{ url: string }>(`/documents/${id}/url`);
+  },
   delete(id: string) {
     return apiFetch<void>(`/documents/${id}`, { method: "DELETE" });
   },

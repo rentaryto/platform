@@ -78,7 +78,6 @@ export async function POST(
         title: 'Subida IPC',
         description: `Notificar subida IPC para ${name}`,
         dueDate: ipcDate,
-        type: 'auto_ipc',
         status: 'pending',
       },
     })
