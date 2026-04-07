@@ -39,14 +39,16 @@ export function RecurringExpenseModal({ apartmentId, expense, open, onOpenChange
   });
 
   useEffect(() => {
-    if (expense) {
-      setValue("name", expense.name);
-      setValue("amount", String(expense.amount));
-      setValue("frequency", expense.frequency);
-    } else {
-      reset({ frequency: "monthly" });
+    if (open) {
+      if (expense) {
+        setValue("name", expense.name);
+        setValue("amount", String(expense.amount));
+        setValue("frequency", expense.frequency);
+      } else {
+        reset({ name: "", amount: "", frequency: "monthly" });
+      }
     }
-  }, [expense, setValue, reset]);
+  }, [open, expense, setValue, reset]);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -67,7 +69,7 @@ export function RecurringExpenseModal({ apartmentId, expense, open, onOpenChange
       }
       await queryClient.invalidateQueries({ queryKey: ["apartment", apartmentId] });
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-      reset({ frequency: "monthly" });
+      reset({ name: "", amount: "", frequency: "monthly" });
       onOpenChange(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al guardar gasto");

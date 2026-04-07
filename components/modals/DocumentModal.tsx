@@ -20,6 +20,7 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [type, setType] = useState("contract");
+  const [subtype, setSubtype] = useState("other");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -40,6 +41,9 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
       setError(null);
       const formData = new FormData();
       formData.append("type", type);
+      if (type === "invoice") {
+        formData.append("subtype", subtype);
+      }
       formData.append("description", description);
       if (startDate) formData.append("startDate", startDate);
       if (endDate) formData.append("endDate", endDate);
@@ -51,6 +55,7 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
       await queryClient.invalidateQueries({ queryKey: ["apartment", apartmentId] });
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       setType("contract");
+      setSubtype("other");
       setDescription("");
       setStartDate("");
       setEndDate("");
@@ -85,6 +90,22 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
               </SelectContent>
             </Select>
           </div>
+          {type === "invoice" && (
+            <div className="space-y-2">
+              <Label>Tipo de factura</Label>
+              <Select value={subtype} onValueChange={setSubtype}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="water">💧 Agua</SelectItem>
+                  <SelectItem value="electricity">⚡ Luz</SelectItem>
+                  <SelectItem value="gas">🔥 Gas</SelectItem>
+                  <SelectItem value="other">📄 Otros</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="space-y-2">
             <Label>Descripción (opcional)</Label>
             <Input

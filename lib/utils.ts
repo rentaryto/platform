@@ -29,9 +29,16 @@ export const frequencyLabels: Record<string, string> = {
 
 export const documentTypeLabels: Record<string, string> = {
   contract: "Contrato",
-  contract_extension: "Ampliación de contrato",
+  contract_extension: "Ampliación",
   invoice: "Factura",
   other: "Otro",
+};
+
+export const invoiceSubtypeLabels: Record<string, string> = {
+  water: "Agua",
+  electricity: "Luz",
+  gas: "Gas",
+  other: "Otros",
 };
 
 export const sendStatusLabels: Record<string, string> = {

@@ -62,7 +62,10 @@ export async function POST(
     const formData = await request.formData()
     const file = formData.get('file') as File
     const type = formData.get('type') as string
+    const subtype = formData.get('subtype') as string | null
     const description = formData.get('description') as string | null
+    const startDate = formData.get('startDate') as string | null
+    const endDate = formData.get('endDate') as string | null
     const sendNow = formData.get('sendNow') === 'true'
 
     if (!file || !type) {
@@ -126,9 +129,12 @@ export async function POST(
       data: {
         apartmentId: params.id,
         type,
+        subtype: subtype || null,
         fileName: file.name,
         fileUrl: filePath, // Store the path, not the public URL
         description: description || null,
+        startDate: startDate ? new Date(startDate) : null,
+        endDate: endDate ? new Date(endDate) : null,
         sendStatus,
       },
     })

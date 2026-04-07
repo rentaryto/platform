@@ -81,6 +81,7 @@ model Document {
   apartmentId String
   apartment   Apartment @relation(fields: [apartmentId], references: [id])
   type        String
+  subtype     String?
   fileName    String
   fileUrl     String
   description String?

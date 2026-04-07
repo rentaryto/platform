@@ -37,8 +37,8 @@ const DEFAULT_EXPENSES: Record<string, ExpenseConfig> = {
   },
   ibi: {
     label: "IBI",
-    frequency: "quarterly",
-    frequencyLabel: "Trimestral",
+    frequency: "semiannual",
+    frequencyLabel: "Semestral",
     defaultAmount: "",
     enabled: true,
     amount: "",

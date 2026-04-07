@@ -18,10 +18,11 @@ import { DocumentModal } from "@/components/modals/DocumentModal";
 import { ReminderModal } from "@/components/modals/ReminderModal";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { formatEuro, formatDate, frequencyLabels, documentTypeLabels, sendStatusLabels, groupDocumentsByMonthYear, calculateMonthlyExpenses } from "@/lib/utils";
+import { getDocumentIcon, getDocumentIconColor, getDocumentLabel } from "@/lib/document-icons";
 import type { RecurringExpense, Reminder } from "@/lib/types";
 import {
   Home, User, MapPin, Euro, Plus, Pencil, Trash2, Send,
-  CheckCircle, XCircle, ArrowLeft, TrendingUp, TrendingDown
+  CheckCircle, ArrowLeft, TrendingUp, TrendingDown, Download
 } from "lucide-react";
 
 export default function ApartmentDetailPage() {
@@ -122,8 +123,9 @@ export default function ApartmentDetailPage() {
     });
   };
 
-  const handleReminderStatus = async (reminderId: string, status: "done" | "dismissed") => {
-    await remindersApi.update(reminderId, { status });
+  const handleToggleReminderStatus = async (reminderId: string, currentStatus: string) => {
+    const newStatus = currentStatus === "done" ? "pending" : "done";
+    await remindersApi.update(reminderId, { status: newStatus });
     queryClient.invalidateQueries({ queryKey: ["apartment", id] });
     queryClient.invalidateQueries({ queryKey: ["dashboard"] });
   };
@@ -317,50 +319,80 @@ export default function ApartmentDetailPage() {
                   </Button>
                 </CardHeader>
                 <CardContent>
-                  {apartment.reminders.filter(r => r.status === "pending").length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No hay recordatorios pendientes</p>
+                  {apartment.reminders.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No hay recordatorios</p>
                   ) : (
                     <div className="space-y-2">
                       {apartment.reminders
-                        .filter(r => r.status === "pending")
-                        .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-                        .map((rem) => (
-                          <div key={rem.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-lg border">
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-sm font-medium">{rem.title}</span>
-                                {rem.type === "auto_ipc" && (
-                                  <Badge variant="warning">IPC</Badge>
+                        .sort((a, b) => {
+                          // Primero los pending, luego los done
+                          if (a.status === "pending" && b.status !== "pending") return -1;
+                          if (a.status !== "pending" && b.status === "pending") return 1;
+                          // Dentro del mismo estado, ordenar por fecha
+                          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+                        })
+                        .map((rem) => {
+                          const isDone = rem.status === "done";
+                          return (
+                            <div
+                              key={rem.id}
+                              className={`flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg border ${
+                                isDone ? "bg-gray-50/50 border-gray-200 opacity-60" : "bg-gray-50 border-gray-300"
+                              }`}
+                            >
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className={`text-sm font-medium ${isDone ? "line-through text-gray-500" : ""}`}>
+                                    {rem.title}
+                                  </span>
+                                  {rem.type === "auto_ipc" && (
+                                    <Badge variant="warning">IPC</Badge>
+                                  )}
+                                  {isDone && (
+                                    <Badge variant="success">Hecho</Badge>
+                                  )}
+                                </div>
+                                {rem.description && (
+                                  <p className={`text-xs mt-1 ${isDone ? "text-gray-400" : "text-muted-foreground"}`}>
+                                    {rem.description}
+                                  </p>
                                 )}
+                                <p className={`text-xs mt-1 ${isDone ? "text-gray-400" : "text-muted-foreground"}`}>
+                                  {formatDate(rem.dueDate)}
+                                </p>
                               </div>
-                              {rem.description && (
-                                <p className="text-xs text-muted-foreground">{rem.description}</p>
-                              )}
-                              <p className="text-xs text-muted-foreground mt-1">{formatDate(rem.dueDate)}</p>
+                              <div className="flex gap-1 justify-end sm:justify-start">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 sm:h-7 sm:w-7"
+                                  title="Editar"
+                                  onClick={() => { setEditingReminder(rem); setReminderOpen(true); }}
+                                >
+                                  <Pencil className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className={`h-8 w-8 sm:h-7 sm:w-7 ${isDone ? "text-gray-400" : "text-green-600"}`}
+                                  title={isDone ? "Marcar como pendiente" : "Marcar como hecho"}
+                                  onClick={() => handleToggleReminderStatus(rem.id, rem.status)}
+                                >
+                                  <CheckCircle className={`h-3 w-3 ${isDone ? "fill-current" : ""}`} />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"
+                                  title="Eliminar"
+                                  onClick={() => handleDeleteReminder(rem.id)}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
                             </div>
-                            <div className="flex gap-1 justify-end sm:justify-start">
-                              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7"
-                                title="Editar"
-                                onClick={() => { setEditingReminder(rem); setReminderOpen(true); }}>
-                                <Pencil className="h-3 w-3" />
-                              </Button>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-green-600"
-                                title="Marcar como hecho"
-                                onClick={() => handleReminderStatus(rem.id, "done")}>
-                                <CheckCircle className="h-3 w-3" />
-                              </Button>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-gray-400"
-                                title="Descartar"
-                                onClick={() => handleReminderStatus(rem.id, "dismissed")}>
-                                <XCircle className="h-3 w-3" />
-                              </Button>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"
-                                onClick={() => handleDeleteReminder(rem.id)}>
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                     </div>
                   )}
                 </CardContent>
@@ -477,37 +509,59 @@ export default function ApartmentDetailPage() {
                         <div key={group.key}>
                           <h3 className="text-sm font-semibold text-gray-700 mb-2">{group.label}</h3>
                           <div className="space-y-2">
-                            {group.documents.map((doc) => (
-                              <div key={doc.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-lg border">
-                                <div className="min-w-0 flex-1">
-                                  <div className="flex items-center gap-2 flex-wrap">
-                                    <Badge variant="secondary">{documentTypeLabels[doc.type]}</Badge>
-                                    <span className="text-sm font-medium truncate">{doc.fileName}</span>
+                            {group.documents.map((doc) => {
+                              const Icon = getDocumentIcon(doc.type, doc.subtype);
+                              const iconColor = getDocumentIconColor(doc.type, doc.subtype);
+                              const label = getDocumentLabel(doc.type, doc.subtype);
+
+                              return (
+                                <div key={doc.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-lg border">
+                                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                                    <div className={`${iconColor} mt-0.5`}>
+                                      <Icon className="h-5 w-5" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        <Badge variant="secondary">{label}</Badge>
+                                        <span className="text-sm font-medium truncate">{doc.fileName}</span>
+                                      </div>
+                                      {doc.description && (
+                                        <p className="text-xs text-muted-foreground mt-1">{doc.description}</p>
+                                      )}
+                                      <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                        <Badge variant={doc.sendStatus === "sent" ? "success" : doc.sendStatus === "pending" ? "orange" : "muted"}>
+                                          {sendStatusLabels[doc.sendStatus]}
+                                        </Badge>
+                                        <span className="text-xs text-muted-foreground">{formatDate(doc.createdAt)}</span>
+                                      </div>
+                                    </div>
                                   </div>
-                                  {doc.description && (
-                                    <p className="text-xs text-muted-foreground mt-1">{doc.description}</p>
-                                  )}
-                                  <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                    <Badge variant={doc.sendStatus === "sent" ? "success" : doc.sendStatus === "pending" ? "orange" : "muted"}>
-                                      {sendStatusLabels[doc.sendStatus]}
-                                    </Badge>
-                                    <span className="text-xs text-muted-foreground">{formatDate(doc.createdAt)}</span>
-                                  </div>
-                                </div>
-                                <div className="flex gap-1 justify-end sm:justify-start">
-                                  {doc.type === "invoice" && doc.sendStatus !== "sent" && apartment.currentTenant && (
-                                    <Button variant="outline" size="icon" className="h-8 w-8 sm:h-7 sm:w-7"
-                                      onClick={() => handleSendDocument(doc.id)}>
-                                      <Send className="h-3 w-3" />
+                                  <div className="flex gap-1 justify-end sm:justify-start">
+                                    <Button
+                                      variant="outline"
+                                      size="icon"
+                                      className="h-8 w-8 sm:h-7 sm:w-7"
+                                      onClick={() => window.open(doc.fileUrl, '_blank')}
+                                      title="Descargar"
+                                    >
+                                      <Download className="h-3 w-3" />
                                     </Button>
-                                  )}
-                                  <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"
-                                    onClick={() => handleDeleteDocument(doc.id)}>
-                                    <Trash2 className="h-3 w-3" />
-                                  </Button>
+                                    {doc.type === "invoice" && doc.sendStatus !== "sent" && apartment.currentTenant && (
+                                      <Button variant="outline" size="icon" className="h-8 w-8 sm:h-7 sm:w-7"
+                                        onClick={() => handleSendDocument(doc.id)}
+                                        title="Enviar al inquilino">
+                                        <Send className="h-3 w-3" />
+                                      </Button>
+                                    )}
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"
+                                      onClick={() => handleDeleteDocument(doc.id)}
+                                      title="Eliminar">
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                       ))}

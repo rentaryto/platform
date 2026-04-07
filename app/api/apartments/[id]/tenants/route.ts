@@ -76,7 +76,7 @@ export async function POST(
       data: {
         apartmentId: params.id,
         title: 'Subida IPC',
-        description: `Revisar y aplicar subida IPC para ${name}`,
+        description: `Notificar subida IPC para ${name}`,
         dueDate: ipcDate,
         type: 'auto_ipc',
         status: 'pending',
