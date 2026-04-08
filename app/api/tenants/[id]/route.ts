@@ -14,24 +14,13 @@ export async function PATCH(
 
   try {
     const body = await request.json()
-    const { name, email, phone, leaseStartDate, leaseEndDate } = body
+    const { name, email, dni, phone, leaseStartDate, leaseEndDate } = body
 
     // Verify tenant belongs to user
     const tenant = await prisma.tenant.findFirst({
       where: {
         id: params.id,
-        OR: [
-          {
-            currentApartment: {
-              userId: user.id,
-            },
-          },
-          {
-            apartmentHistory: {
-              userId: user.id,
-            },
-          },
-        ],
+        userId: user.id,
       },
     })
 
@@ -44,6 +33,7 @@ export async function PATCH(
       data: {
         ...(name && { name }),
         ...(email && { email }),
+        ...(dni !== undefined && { dni }),
         ...(phone !== undefined && { phone }),
         ...(leaseStartDate && { leaseStartDate: new Date(leaseStartDate) }),
         ...(leaseEndDate !== undefined && {
