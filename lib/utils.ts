@@ -51,8 +51,20 @@ export function groupDocumentsByMonthYear(documents: any[]) {
   const grouped: Record<string, any[]> = {};
 
   documents.forEach(doc => {
-    // Usar startDate si existe, sino usar createdAt
-    const date = doc.startDate ? new Date(doc.startDate) : new Date(doc.createdAt);
+    let date: Date;
+
+    // Lógica de agrupación según tipo de documento
+    if (doc.type === 'contract' || doc.type === 'contract_extension') {
+      // Contratos: usar startDate o createdAt
+      date = doc.startDate ? new Date(doc.startDate) : new Date(doc.createdAt);
+    } else if (doc.type === 'invoice') {
+      // Facturas: usar endDate o createdAt
+      date = doc.endDate ? new Date(doc.endDate) : new Date(doc.createdAt);
+    } else {
+      // Otros: usar createdAt
+      date = new Date(doc.createdAt);
+    }
+
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 
     if (!grouped[key]) {

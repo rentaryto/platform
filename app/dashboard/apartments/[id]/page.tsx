@@ -540,7 +540,15 @@ export default function ApartmentDetailPage() {
                                             {sendStatusLabels[doc.sendStatus]}
                                           </Badge>
                                         )}
-                                        <span className="text-xs text-muted-foreground">{formatDate(doc.createdAt)}</span>
+                                        <span className="text-xs text-muted-foreground">
+                                          {doc.startDate && doc.endDate
+                                            ? `${formatDate(doc.startDate)} - ${formatDate(doc.endDate)}`
+                                            : doc.startDate
+                                            ? formatDate(doc.startDate)
+                                            : doc.endDate
+                                            ? formatDate(doc.endDate)
+                                            : formatDate(doc.createdAt)}
+                                        </span>
                                       </div>
                                     </div>
                                   </div>
