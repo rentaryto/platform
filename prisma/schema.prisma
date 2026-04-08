@@ -47,6 +47,7 @@ model Tenant {
   user           User      @relation(fields: [userId], references: [id])
   name           String
   email          String
+  dni            String?
   phone          String?
   leaseStartDate DateTime
   leaseEndDate   DateTime?

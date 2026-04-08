@@ -230,6 +230,9 @@ export default function ApartmentDetailPage() {
                         <div>
                           <p className="font-medium">{apartment.currentTenant.name}</p>
                           <p className="text-sm text-muted-foreground">{apartment.currentTenant.email}</p>
+                          {apartment.currentTenant.dni && (
+                            <p className="text-sm text-muted-foreground">DNI: {apartment.currentTenant.dni}</p>
+                          )}
                           {apartment.currentTenant.phone && (
                             <p className="text-sm text-muted-foreground">{apartment.currentTenant.phone}</p>
                           )}

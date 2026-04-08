@@ -88,24 +88,24 @@ export function AssignTenantModal({ apartmentId, open, onOpenChange }: Props) {
                 setSelectedTenantId(value);
                 setValue("tenantId", value);
               }}
+              disabled={availableTenants.length === 0}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecciona un inquilino..." />
+                <SelectValue placeholder={availableTenants.length === 0 ? "No hay inquilinos disponibles" : "Selecciona un inquilino..."} />
               </SelectTrigger>
               <SelectContent>
-                {availableTenants.length === 0 ? (
-                  <div className="p-2 text-sm text-muted-foreground text-center">
-                    No hay inquilinos disponibles. Crea uno primero en la sección Inquilinos.
-                  </div>
-                ) : (
-                  availableTenants.map((tenant) => (
-                    <SelectItem key={tenant.id} value={tenant.id}>
-                      {tenant.name} ({tenant.email})
-                    </SelectItem>
-                  ))
-                )}
+                {availableTenants.map((tenant) => (
+                  <SelectItem key={tenant.id} value={tenant.id}>
+                    {tenant.name} ({tenant.email})
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
+            {availableTenants.length === 0 && (
+              <p className="text-xs text-muted-foreground">
+                Crea un inquilino primero en la sección Inquilinos.
+              </p>
+            )}
             {errors.tenantId && <p className="text-xs text-red-500">{errors.tenantId.message}</p>}
           </div>
           <div className="space-y-2">

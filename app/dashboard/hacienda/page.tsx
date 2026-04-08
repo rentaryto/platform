@@ -74,6 +74,9 @@ export default function HaciendaPage() {
         content += `INQUILINO\n`;
         content += `---------\n`;
         content += `Nombre: ${property.tenant.name}\n`;
+        if (property.tenant.dni) {
+          content += `DNI: ${property.tenant.dni}\n`;
+        }
         content += `Email: ${property.tenant.email}\n`;
         content += `Periodo: ${formatDate(property.tenant.leaseStart)}`;
         if (property.tenant.leaseEnd) {
@@ -239,6 +242,7 @@ export default function HaciendaPage() {
                         <h4 className="text-sm font-semibold mb-2">Inquilino</h4>
                         <div className="text-sm space-y-1">
                           <p><strong>Nombre:</strong> {property.tenant.name}</p>
+                          {property.tenant.dni && <p><strong>DNI:</strong> {property.tenant.dni}</p>}
                           <p><strong>Email:</strong> {property.tenant.email}</p>
                           <p><strong>Periodo:</strong> {formatDate(property.tenant.leaseStart)} {property.tenant.leaseEnd ? `- ${formatDate(property.tenant.leaseEnd)}` : '- Actualidad'}</p>
                         </div>

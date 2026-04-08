@@ -15,7 +15,7 @@ export async function POST(
 
   try {
     const body = await request.json()
-    const { name, email, phone, leaseStartDate } = body
+    const { name, email, dni, phone, leaseStartDate } = body
 
     if (!name || !email || !leaseStartDate) {
       return NextResponse.json(
@@ -34,6 +34,7 @@ export async function POST(
 
     // Sanitize inputs
     const sanitizedName = sanitizeString(name, 200)
+    const sanitizedDni = dni ? sanitizeString(dni, 20) : null
     const sanitizedPhone = phone ? sanitizeString(phone, 20) : null
 
     // Verify apartment ownership
@@ -54,6 +55,7 @@ export async function POST(
         userId: user.id,
         name: sanitizedName,
         email,
+        dni: sanitizedDni,
         phone: sanitizedPhone,
         leaseStartDate: new Date(leaseStartDate),
         apartmentId: params.id,

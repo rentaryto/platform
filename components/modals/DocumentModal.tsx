@@ -83,9 +83,9 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="invoice">Factura</SelectItem>
                 <SelectItem value="contract">Contrato</SelectItem>
                 <SelectItem value="contract_extension">Ampliación de contrato</SelectItem>
-                <SelectItem value="invoice">Factura</SelectItem>
                 <SelectItem value="other">Otro</SelectItem>
               </SelectContent>
             </Select>

@@ -114,6 +114,7 @@ export default function TenantsPage() {
                           <tr className="border-b text-muted-foreground">
                             <th className="text-left pb-2 font-medium">Nombre</th>
                             <th className="text-left pb-2 font-medium">Email</th>
+                            <th className="text-left pb-2 font-medium">DNI</th>
                             <th className="text-left pb-2 font-medium">Teléfono</th>
                             <th className="text-left pb-2 font-medium">Entrada</th>
                             <th className="text-left pb-2 font-medium">Inmueble</th>
@@ -125,6 +126,7 @@ export default function TenantsPage() {
                             <tr key={tenant.id}>
                               <td className="py-3 font-medium">{tenant.name}</td>
                               <td className="py-3 text-muted-foreground">{tenant.email}</td>
+                              <td className="py-3 text-muted-foreground">{tenant.dni ?? "—"}</td>
                               <td className="py-3 text-muted-foreground">{tenant.phone ?? "—"}</td>
                               <td className="py-3 text-muted-foreground">{formatDate(tenant.leaseStartDate)}</td>
                               <td className="py-3">
@@ -171,6 +173,7 @@ export default function TenantsPage() {
                           <tr className="border-b text-muted-foreground">
                             <th className="text-left pb-2 font-medium">Nombre</th>
                             <th className="text-left pb-2 font-medium">Email</th>
+                            <th className="text-left pb-2 font-medium">DNI</th>
                             <th className="text-left pb-2 font-medium">Teléfono</th>
                             <th className="text-left pb-2 font-medium">Entrada</th>
                             <th className="text-left pb-2 font-medium">Salida</th>
@@ -183,6 +186,7 @@ export default function TenantsPage() {
                             <tr key={tenant.id} className="text-muted-foreground">
                               <td className="py-3 font-medium text-foreground">{tenant.name}</td>
                               <td className="py-3">{tenant.email}</td>
+                              <td className="py-3">{tenant.dni ?? "—"}</td>
                               <td className="py-3">{tenant.phone ?? "—"}</td>
                               <td className="py-3">{formatDate(tenant.leaseStartDate)}</td>
                               <td className="py-3">{tenant.leaseEndDate ? formatDate(tenant.leaseEndDate) : "—"}</td>

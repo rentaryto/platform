@@ -15,6 +15,7 @@ import type { Tenant } from "@/lib/types";
 const schema = z.object({
   name: z.string().min(1, "El nombre es obligatorio"),
   email: z.string().email("Email inválido"),
+  dni: z.string().optional(),
   phone: z.string().optional(),
 });
 
@@ -40,10 +41,11 @@ export function TenantModal({ tenant, open, onOpenChange }: Props) {
       reset({
         name: tenant.name,
         email: tenant.email,
+        dni: tenant.dni || "",
         phone: tenant.phone || "",
       });
     } else {
-      reset({ name: "", email: "", phone: "" });
+      reset({ name: "", email: "", dni: "", phone: "" });
     }
   }, [tenant, reset]);
 
@@ -82,6 +84,10 @@ export function TenantModal({ tenant, open, onOpenChange }: Props) {
             <Label>Email</Label>
             <Input type="email" placeholder="correo@ejemplo.com" {...register("email")} />
             {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
+          </div>
+          <div className="space-y-2">
+            <Label>DNI (opcional)</Label>
+            <Input placeholder="12345678A" {...register("dni")} />
           </div>
           <div className="space-y-2">
             <Label>Teléfono (opcional)</Label>

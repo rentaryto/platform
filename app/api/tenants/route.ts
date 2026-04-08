@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json()
-    const { name, email, phone } = body
+    const { name, email, dni, phone } = body
 
     if (!name || !email) {
       return NextResponse.json(
@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
 
     // Sanitize inputs
     const sanitizedName = sanitizeString(name, 200)
+    const sanitizedDni = dni ? sanitizeString(dni, 20) : null
     const sanitizedPhone = phone ? sanitizeString(phone, 20) : null
 
     // Create tenant without apartment (unassigned)
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
         userId: user.id,
         name: sanitizedName,
         email,
+        dni: sanitizedDni,
         phone: sanitizedPhone,
         leaseStartDate: new Date(), // placeholder, will be set when assigned
       },

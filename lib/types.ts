@@ -8,6 +8,7 @@ export interface Tenant {
   id: string;
   name: string;
   email: string;
+  dni?: string;
   phone?: string;
   leaseStartDate: string;
   leaseEndDate?: string;
@@ -124,6 +125,7 @@ export interface TaxReportData {
     tenant: {
       name: string;
       email: string;
+      dni: string | null;
       leaseStart: string;
       leaseEnd: string | null;
     } | null;

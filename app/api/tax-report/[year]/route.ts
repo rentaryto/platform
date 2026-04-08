@@ -141,6 +141,7 @@ export async function GET(
         ? {
             name: tenantInfo.name,
             email: tenantInfo.email,
+            dni: tenantInfo.dni,
             leaseStart: tenantInfo.leaseStartDate.toISOString().split('T')[0],
             leaseEnd: tenantInfo.leaseEndDate
               ? tenantInfo.leaseEndDate.toISOString().split('T')[0]
