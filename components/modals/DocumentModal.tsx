@@ -19,7 +19,7 @@ interface Props {
 export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Props) {
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [type, setType] = useState("contract");
+  const [type, setType] = useState("invoice");
   const [subtype, setSubtype] = useState("other");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");

@@ -206,12 +206,6 @@ export default function ApartmentDetailPage() {
                       </span>
                       <span className="text-sm font-semibold">{formatEuro(apartment.rentAmount)}</span>
                     </div>
-                    {apartment.cadastralReference && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Ref. Catastral</span>
-                        <span className="text-xs font-mono">{apartment.cadastralReference}</span>
-                      </div>
-                    )}
                     <Button variant="outline" size="sm" onClick={() => setEditRentOpen(true)}>
                       <Pencil className="h-3 w-3 mr-1" /> Editar Renta
                     </Button>
