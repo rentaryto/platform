@@ -41,6 +41,9 @@ export async function POST(
         id: tenantId,
         userId: user.id,
       },
+      include: {
+        currentApartment: true,
+      },
     })
 
     if (!tenant) {
