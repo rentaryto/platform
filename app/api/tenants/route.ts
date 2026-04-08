@@ -10,21 +10,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 
-  // Get all tenants from user's apartments
+  // Get all tenants belonging to this user
   const tenants = await prisma.tenant.findMany({
     where: {
-      OR: [
-        {
-          currentApartment: {
-            userId: user.id,
-          },
-        },
-        {
-          apartmentHistory: {
-            userId: user.id,
-          },
-        },
-      ],
+      userId: user.id,
     },
     include: {
       currentApartment: {
@@ -79,6 +68,7 @@ export async function POST(request: NextRequest) {
     // Create tenant without apartment (unassigned)
     const tenant = await prisma.tenant.create({
       data: {
+        userId: user.id,
         name: sanitizedName,
         email,
         phone: sanitizedPhone,

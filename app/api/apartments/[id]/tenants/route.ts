@@ -51,6 +51,7 @@ export async function POST(
     // Create tenant
     const tenant = await prisma.tenant.create({
       data: {
+        userId: user.id,
         name: sanitizedName,
         email,
         phone: sanitizedPhone,
