@@ -47,6 +47,12 @@ export const sendStatusLabels: Record<string, string> = {
   sent: "Enviado",
 };
 
+export const paidStatusLabels: Record<string, string> = {
+  not_applicable: "N/A",
+  unpaid: "No pagada",
+  paid: "Pagada",
+};
+
 export function groupDocumentsByMonthYear(documents: any[]) {
   const grouped: Record<string, any[]> = {};
 

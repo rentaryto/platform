@@ -47,6 +47,8 @@ export interface Document {
   endDate?: string;
   sendStatus: "not_applicable" | "pending" | "sent";
   sentAt?: string;
+  paidStatus: "not_applicable" | "unpaid" | "paid";
+  paidAt?: string;
   createdAt: string;
 }
 

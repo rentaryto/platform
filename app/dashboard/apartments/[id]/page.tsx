@@ -17,12 +17,12 @@ import { UnexpectedExpenseModal } from "@/components/modals/UnexpectedExpenseMod
 import { DocumentModal } from "@/components/modals/DocumentModal";
 import { ReminderModal } from "@/components/modals/ReminderModal";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { formatEuro, formatDate, frequencyLabels, documentTypeLabels, sendStatusLabels, groupDocumentsByMonthYear, calculateMonthlyExpenses } from "@/lib/utils";
+import { formatEuro, formatDate, frequencyLabels, documentTypeLabels, sendStatusLabels, paidStatusLabels, groupDocumentsByMonthYear, calculateMonthlyExpenses } from "@/lib/utils";
 import { getDocumentIcon, getDocumentIconColor, getDocumentLabel } from "@/lib/document-icons";
 import type { RecurringExpense, Reminder } from "@/lib/types";
 import {
   Home, User, MapPin, Euro, Plus, Pencil, Trash2, Send,
-  CheckCircle, ArrowLeft, TrendingUp, TrendingDown, Download
+  CheckCircle, ArrowLeft, TrendingUp, TrendingDown, Download, DollarSign
 } from "lucide-react";
 
 export default function ApartmentDetailPage() {
@@ -104,10 +104,35 @@ export default function ApartmentDetailPage() {
     });
   };
 
-  const handleSendDocument = async (docId: string) => {
-    await documentsApi.send(docId);
-    queryClient.invalidateQueries({ queryKey: ["apartment", id] });
-    queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+  const handleSendDocument = (docId: string, tenantName: string, tenantEmail: string) => {
+    setConfirmDialog({
+      open: true,
+      title: "Enviar factura",
+      description: `¿Enviar esta factura a ${tenantName} (${tenantEmail})?`,
+      onConfirm: async () => {
+        await documentsApi.send(docId);
+        queryClient.invalidateQueries({ queryKey: ["apartment", id] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+        setConfirmDialog({ ...confirmDialog, open: false });
+      },
+    });
+  };
+
+  const handleTogglePaidStatus = (docId: string, currentStatus: string, fileName: string) => {
+    const willBePaid = currentStatus !== "paid";
+    setConfirmDialog({
+      open: true,
+      title: willBePaid ? "Marcar como pagada" : "Marcar como no pagada",
+      description: willBePaid
+        ? `¿Marcar "${fileName}" como pagada?`
+        : `¿Marcar "${fileName}" como no pagada?`,
+      onConfirm: async () => {
+        await documentsApi.markAsPaid(docId, willBePaid);
+        queryClient.invalidateQueries({ queryKey: ["apartment", id] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+        setConfirmDialog({ ...confirmDialog, open: false });
+      },
+    });
   };
 
   const handleDownloadDocument = async (docId: string) => {
@@ -513,20 +538,28 @@ export default function ApartmentDetailPage() {
                               const Icon = getDocumentIcon(doc.type, doc.subtype);
                               const iconColor = getDocumentIconColor(doc.type, doc.subtype);
                               const label = getDocumentLabel(doc.type, doc.subtype);
+                              const isPaid = doc.paidStatus === "paid";
+                              const isInvoice = doc.type === "invoice";
 
                               return (
-                                <div key={doc.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-lg border">
+                                <div key={doc.id} className={`flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg border ${
+                                  isPaid ? "bg-gray-50/50 border-gray-200 opacity-70" : "bg-gray-50"
+                                }`}>
                                   <div className="flex items-start gap-3 flex-1 min-w-0">
-                                    <div className={`${iconColor} mt-0.5`}>
+                                    <div className={`${iconColor} mt-0.5 ${isPaid ? "opacity-60" : ""}`}>
                                       <Icon className="h-5 w-5" />
                                     </div>
                                     <div className="min-w-0 flex-1">
                                       <div className="flex items-center gap-2 flex-wrap">
                                         <Badge variant="secondary">{label}</Badge>
-                                        <span className="text-sm font-medium truncate">{doc.fileName}</span>
+                                        <span className={`text-sm font-medium truncate ${isPaid ? "line-through text-gray-500" : ""}`}>
+                                          {doc.fileName}
+                                        </span>
                                       </div>
                                       {doc.description && (
-                                        <p className="text-xs text-muted-foreground mt-1">{doc.description}</p>
+                                        <p className={`text-xs mt-1 ${isPaid ? "text-gray-400" : "text-muted-foreground"}`}>
+                                          {doc.description}
+                                        </p>
                                       )}
                                       <div className="flex items-center gap-2 mt-1 flex-wrap">
                                         {doc.sendStatus !== "not_applicable" && (
@@ -534,7 +567,12 @@ export default function ApartmentDetailPage() {
                                             {sendStatusLabels[doc.sendStatus]}
                                           </Badge>
                                         )}
-                                        <span className="text-xs text-muted-foreground">
+                                        {doc.paidStatus !== "not_applicable" && (
+                                          <Badge variant={doc.paidStatus === "paid" ? "success" : "warning"}>
+                                            {paidStatusLabels[doc.paidStatus]}
+                                          </Badge>
+                                        )}
+                                        <span className={`text-xs ${isPaid ? "text-gray-400" : "text-muted-foreground"}`}>
                                           {doc.startDate && doc.endDate
                                             ? `${formatDate(doc.startDate)} - ${formatDate(doc.endDate)}`
                                             : doc.startDate
@@ -556,11 +594,22 @@ export default function ApartmentDetailPage() {
                                     >
                                       <Download className="h-3 w-3" />
                                     </Button>
-                                    {doc.type === "invoice" && doc.sendStatus !== "sent" && apartment.currentTenant && (
+                                    {isInvoice && doc.sendStatus !== "sent" && apartment.currentTenant && (
                                       <Button variant="outline" size="icon" className="h-8 w-8 sm:h-7 sm:w-7"
-                                        onClick={() => handleSendDocument(doc.id)}
+                                        onClick={() => handleSendDocument(doc.id, apartment.currentTenant!.name, apartment.currentTenant!.email)}
                                         title="Enviar al inquilino">
                                         <Send className="h-3 w-3" />
+                                      </Button>
+                                    )}
+                                    {isInvoice && (
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className={`h-8 w-8 sm:h-7 sm:w-7 ${isPaid ? "text-gray-400" : "text-green-600"}`}
+                                        onClick={() => handleTogglePaidStatus(doc.id, doc.paidStatus, doc.fileName)}
+                                        title={isPaid ? "Marcar como no pagada" : "Marcar como pagada"}
+                                      >
+                                        <DollarSign className={`h-3 w-3 ${isPaid ? "fill-current" : ""}`} />
                                       </Button>
                                     )}
                                     <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"

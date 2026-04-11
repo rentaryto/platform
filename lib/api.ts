@@ -205,6 +205,12 @@ export const documentsApi = {
       method: "POST",
     });
   },
+  markAsPaid(id: string, paid: boolean) {
+    return apiFetch<Document>(`/documents/${id}/paid`, {
+      method: "POST",
+      body: JSON.stringify({ paid }),
+    });
+  },
   getSignedUrl(id: string) {
     return apiFetch<{ url: string }>(`/documents/${id}/url`);
   },

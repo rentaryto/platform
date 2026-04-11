@@ -93,6 +93,8 @@ model Document {
   endDate     DateTime?
   sendStatus  String    @default("not_applicable")
   sentAt      DateTime?
+  paidStatus  String    @default("not_applicable")
+  paidAt      DateTime?
   createdAt   DateTime  @default(now())
 }
 
