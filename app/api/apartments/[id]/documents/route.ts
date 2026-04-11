@@ -124,6 +124,7 @@ export async function POST(
     // Store file path instead of URL (we'll generate signed URLs when needed)
     // Create document record
     const sendStatus = type === 'invoice' && sendNow ? 'pending' : 'not_applicable'
+    const paidStatus = type === 'invoice' ? 'unpaid' : 'not_applicable'
 
     const document = await prisma.document.create({
       data: {
@@ -136,6 +137,7 @@ export async function POST(
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
         sendStatus,
+        paidStatus,
       },
     })
 
