@@ -75,19 +75,27 @@ export async function sendDocumentEmail({ documentId, userId }: SendDocumentEmai
       .replace(/'/g, '&#039;')
   }
 
-  const tenantNameSafe = escapeHtml(tenant.name)
-  const userNameSafe = escapeHtml(userData.name)
+  // Extract first name only (before first space)
+  const getFirstName = (fullName: string) => {
+    return fullName.split(' ')[0]
+  }
+
+  const tenantFirstName = escapeHtml(getFirstName(tenant.name))
+  const userFirstName = escapeHtml(getFirstName(userData.name))
   const apartmentNameSafe = escapeHtml(document.apartment.name)
-  const fileNameSafe = escapeHtml(document.fileName)
   const descriptionSafe = document.description ? escapeHtml(document.description) : null
 
   const typeLabel =
     document.type === 'invoice' ? 'Factura' :
-    document.type === 'contract' ? 'Contrato' : 'Otro'
+    document.type === 'contract' ? 'Contrato' :
+    document.type === 'contract_extension' ? 'Ampliación de contrato' : 'Documento'
+
+  // Subject: <tipo> <nombre inmueble>
+  const subject = `${typeLabel} ${apartmentNameSafe}`
 
   console.log('[EMAIL SERVICE] Preparing email to:', tenant.email)
   console.log('[EMAIL SERVICE] From:', 'Rentaryto <noreply@app.rentaryto.com>')
-  console.log('[EMAIL SERVICE] Subject:', `Nuevo documento: ${fileNameSafe}`)
+  console.log('[EMAIL SERVICE] Subject:', subject)
 
   // Verify RESEND_API_KEY is configured
   if (!process.env.RESEND_API_KEY) {
@@ -99,16 +107,48 @@ export async function sendDocumentEmail({ documentId, userId }: SendDocumentEmai
   const { data, error } = await resend.emails.send({
     from: 'Rentaryto <noreply@app.rentaryto.com>',
     to: tenant.email,
-    subject: `Nuevo documento: ${fileNameSafe}`,
+    subject: subject,
     html: `
-      <h2>Hola ${tenantNameSafe},</h2>
-      <p>${userNameSafe} te ha enviado un nuevo documento para ${apartmentNameSafe}.</p>
-      <p><strong>Tipo:</strong> ${typeLabel}</p>
-      ${descriptionSafe ? `<p><strong>Descripción:</strong> ${descriptionSafe}</p>` : ''}
-      <p><a href="${urlData.signedUrl}" target="_blank">Ver documento</a></p>
-      <p><em>Este enlace es válido por 1 año.</em></p>
-      <br/>
-      <p>Saludos,<br/>${userNameSafe}</p>
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background-color: #f8f9fa; border-radius: 8px; padding: 24px; margin-bottom: 20px;">
+          <h2 style="margin: 0 0 16px 0; color: #1a1a1a; font-size: 24px;">Hola ${tenantFirstName},</h2>
+          <p style="margin: 0; font-size: 16px; color: #4a5568;">
+            Te comparto ${document.type === 'invoice' ? 'la factura' : document.type === 'contract' || document.type === 'contract_extension' ? 'el contrato' : 'un documento'} de <strong>${apartmentNameSafe}</strong>.
+          </p>
+        </div>
+
+        ${descriptionSafe ? `
+        <div style="margin-bottom: 20px;">
+          <p style="margin: 0; font-size: 14px; color: #718096;">
+            <strong>Nota:</strong> ${descriptionSafe}
+          </p>
+        </div>
+        ` : ''}
+
+        <div style="margin: 24px 0;">
+          <a href="${urlData.signedUrl}"
+             style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 500; font-size: 16px;">
+            Ver documento
+          </a>
+        </div>
+
+        <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+          <p style="margin: 0 0 16px 0; font-size: 14px; color: #718096;">
+            Saludos,<br/>
+            <strong>${userFirstName}</strong>
+          </p>
+          <p style="margin: 0; font-size: 12px; color: #a0aec0;">
+            Este enlace estará disponible durante 1 año.
+          </p>
+        </div>
+      </body>
+      </html>
     `,
   })
 

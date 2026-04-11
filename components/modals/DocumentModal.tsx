@@ -73,7 +73,7 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Subir Documento, facturas u otros</DialogTitle>
+          <DialogTitle>Subir documentos, facturas u otros</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
