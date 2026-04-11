@@ -20,7 +20,7 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [type, setType] = useState("invoice");
-  const [subtype, setSubtype] = useState("other");
+  const [subtype, setSubtype] = useState("electricity");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -54,8 +54,8 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
       await documentsApi.upload(apartmentId, formData);
       await queryClient.invalidateQueries({ queryKey: ["apartment", apartmentId] });
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-      setType("contract");
-      setSubtype("other");
+      setType("invoice");
+      setSubtype("electricity");
       setDescription("");
       setStartDate("");
       setEndDate("");
