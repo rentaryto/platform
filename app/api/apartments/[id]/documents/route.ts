@@ -2,6 +2,7 @@ import { requireAuth } from '@/lib/api-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createClient } from '@/lib/supabase-server'
+import { sendDocumentEmail } from '@/lib/email-service'
 
 export async function GET(
   request: NextRequest,
@@ -147,7 +148,6 @@ export async function POST(
       console.log('[UPLOAD DOCUMENT] sendNow=true, attempting to send email for document:', document.id)
 
       try {
-        const { sendDocumentEmail } = await import('@/lib/email-service')
         await sendDocumentEmail({
           documentId: document.id,
           userId: user.id,
