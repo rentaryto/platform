@@ -45,11 +45,15 @@ export default function ApartmentDetailPage() {
     open: boolean;
     title: string;
     description: string;
+    confirmText?: string;
+    variant?: "default" | "destructive";
     onConfirm: () => void;
   }>({
     open: false,
     title: "",
     description: "",
+    confirmText: "Confirmar",
+    variant: "default",
     onConfirm: () => {},
   });
 
@@ -68,6 +72,8 @@ export default function ApartmentDetailPage() {
       open: true,
       title: "Quitar inquilino",
       description: "¿Seguro que quieres quitar al inquilino? Esta acción marcará el inmueble como vacío.",
+      confirmText: "Quitar",
+      variant: "destructive",
       onConfirm: async () => {
         await tenantsApi.remove(id);
         queryClient.invalidateQueries({ queryKey: ["apartment", id] });
@@ -82,6 +88,8 @@ export default function ApartmentDetailPage() {
       open: true,
       title: "Eliminar gasto recurrente",
       description: "¿Eliminar este gasto recurrente? Esta acción no se puede deshacer.",
+      confirmText: "Eliminar",
+      variant: "destructive",
       onConfirm: async () => {
         await recurringExpensesApi.delete(expenseId);
         queryClient.invalidateQueries({ queryKey: ["apartment", id] });
@@ -96,6 +104,8 @@ export default function ApartmentDetailPage() {
       open: true,
       title: "Eliminar gasto",
       description: "¿Eliminar este gasto inesperado? Esta acción no se puede deshacer.",
+      confirmText: "Eliminar",
+      variant: "destructive",
       onConfirm: async () => {
         await unexpectedExpensesApi.delete(expenseId);
         queryClient.invalidateQueries({ queryKey: ["apartment", id] });
@@ -109,6 +119,8 @@ export default function ApartmentDetailPage() {
       open: true,
       title: "Enviar factura",
       description: `¿Enviar esta factura a ${tenantName} (${tenantEmail})?`,
+      confirmText: "Enviar",
+      variant: "default",
       onConfirm: async () => {
         await documentsApi.send(docId);
         queryClient.invalidateQueries({ queryKey: ["apartment", id] });
@@ -126,6 +138,8 @@ export default function ApartmentDetailPage() {
       description: willBePaid
         ? `¿Marcar "${fileName}" como pagada?`
         : `¿Marcar "${fileName}" como no pagada?`,
+      confirmText: willBePaid ? "Marcar como pagada" : "Marcar como no pagada",
+      variant: "default",
       onConfirm: async () => {
         await documentsApi.markAsPaid(docId, willBePaid);
         queryClient.invalidateQueries({ queryKey: ["apartment", id] });
@@ -149,6 +163,8 @@ export default function ApartmentDetailPage() {
       open: true,
       title: "Eliminar documento",
       description: "¿Eliminar este documento? Esta acción no se puede deshacer.",
+      confirmText: "Eliminar",
+      variant: "destructive",
       onConfirm: async () => {
         await documentsApi.delete(docId);
         queryClient.invalidateQueries({ queryKey: ["apartment", id] });
@@ -169,6 +185,8 @@ export default function ApartmentDetailPage() {
       open: true,
       title: "Eliminar recordatorio",
       description: "¿Eliminar este recordatorio? Esta acción no se puede deshacer.",
+      confirmText: "Eliminar",
+      variant: "destructive",
       onConfirm: async () => {
         await remindersApi.delete(reminderId);
         queryClient.invalidateQueries({ queryKey: ["apartment", id] });
@@ -595,15 +613,19 @@ export default function ApartmentDetailPage() {
                                       <Download className="h-3 w-3" />
                                     </Button>
                                     {isInvoice && doc.sendStatus !== "sent" && apartment.currentTenant && (
-                                      <Button variant="outline" size="icon" className="h-8 w-8 sm:h-7 sm:w-7"
+                                      <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="h-8 w-8 sm:h-7 sm:w-7"
                                         onClick={() => handleSendDocument(doc.id, apartment.currentTenant!.name, apartment.currentTenant!.email)}
-                                        title="Enviar al inquilino">
+                                        title="Enviar al inquilino"
+                                      >
                                         <Send className="h-3 w-3" />
                                       </Button>
                                     )}
                                     {isInvoice && (
                                       <Button
-                                        variant="ghost"
+                                        variant="outline"
                                         size="icon"
                                         className={`h-8 w-8 sm:h-7 sm:w-7 ${isPaid ? "text-gray-400" : "text-green-600"}`}
                                         onClick={() => handleTogglePaidStatus(doc.id, doc.paidStatus, doc.fileName)}
@@ -612,9 +634,13 @@ export default function ApartmentDetailPage() {
                                         <DollarSign className={`h-3 w-3 ${isPaid ? "fill-current" : ""}`} />
                                       </Button>
                                     )}
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-7 sm:w-7 text-red-500"
+                                    <Button
+                                      variant="outline"
+                                      size="icon"
+                                      className="h-8 w-8 sm:h-7 sm:w-7 text-red-500 hover:bg-red-50"
                                       onClick={() => handleDeleteDocument(doc.id)}
-                                      title="Eliminar">
+                                      title="Eliminar"
+                                    >
                                       <Trash2 className="h-3 w-3" />
                                     </Button>
                                   </div>
@@ -679,8 +705,8 @@ export default function ApartmentDetailPage() {
           title={confirmDialog.title}
           description={confirmDialog.description}
           onConfirm={confirmDialog.onConfirm}
-          variant="destructive"
-          confirmText="Eliminar"
+          variant={confirmDialog.variant}
+          confirmText={confirmDialog.confirmText}
         />
         <MobileNav />
       </main>
