@@ -142,6 +142,31 @@ export async function POST(
       },
     })
 
+    // If sendNow is true and type is invoice, send email immediately
+    if (type === 'invoice' && sendNow) {
+      console.log('[UPLOAD DOCUMENT] sendNow=true, attempting to send email for document:', document.id)
+
+      try {
+        const { sendDocumentEmail } = await import('@/lib/email-service')
+        await sendDocumentEmail({
+          documentId: document.id,
+          userId: user.id,
+        })
+
+        console.log('[UPLOAD DOCUMENT] Email sent successfully on upload')
+
+        // Refresh the document to get the updated status
+        const updatedDoc = await prisma.document.findUnique({
+          where: { id: document.id }
+        })
+        return NextResponse.json(updatedDoc || document, { status: 201 })
+      } catch (emailError) {
+        console.error('[UPLOAD DOCUMENT] Error sending email:', emailError)
+        // Email failed, but document was created with status 'pending'
+        // Return the document with 'pending' status so user can retry
+      }
+    }
+
     return NextResponse.json(document, { status: 201 })
   } catch (error) {
     console.error('Error creating document:', error)
