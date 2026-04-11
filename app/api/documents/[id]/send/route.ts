@@ -13,8 +13,11 @@ export async function POST(
   const user = await requireAuth(request)
 
   if (!user) {
+    console.error('[SEND EMAIL] Unauthorized')
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
+
+  console.log('[SEND EMAIL] Starting email send for document:', params.id)
 
   try {
     // Verify document belongs to user
@@ -35,10 +38,14 @@ export async function POST(
     })
 
     if (!document) {
+      console.error('[SEND EMAIL] Document not found:', params.id)
       return NextResponse.json({ error: 'Documento no encontrado' }, { status: 404 })
     }
 
+    console.log('[SEND EMAIL] Document found:', document.fileName)
+
     if (!document.apartment.currentTenant) {
+      console.error('[SEND EMAIL] No tenant assigned to apartment')
       return NextResponse.json(
         { error: 'El inmueble no tiene inquilino asignado' },
         { status: 400 }
@@ -46,13 +53,18 @@ export async function POST(
     }
 
     const tenant = document.apartment.currentTenant
+    console.log('[SEND EMAIL] Tenant email:', tenant.email)
+
     const userData = await prisma.user.findUnique({
       where: { id: user.id },
     })
 
     if (!userData) {
+      console.error('[SEND EMAIL] User not found:', user.id)
       return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 })
     }
+
+    console.log('[SEND EMAIL] User found:', userData.name)
 
     // Generate signed URL valid for 1 year
     const supabase = await createClient()
@@ -61,12 +73,14 @@ export async function POST(
       .createSignedUrl(document.fileUrl, 31536000) // 1 year in seconds
 
     if (urlError) {
-      console.error('Signed URL error:', urlError)
+      console.error('[SEND EMAIL] Signed URL error:', urlError)
       return NextResponse.json(
         { error: 'Error al generar enlace del documento' },
         { status: 500 }
       )
     }
+
+    console.log('[SEND EMAIL] Signed URL generated successfully')
 
     // Security: Sanitize data for HTML injection prevention
     const escapeHtml = (str: string) => {
@@ -88,9 +102,22 @@ export async function POST(
       document.type === 'invoice' ? 'Factura' :
       document.type === 'contract' ? 'Contrato' : 'Otro'
 
+    console.log('[SEND EMAIL] Preparing email to:', tenant.email)
+    console.log('[SEND EMAIL] From:', 'Rentaryto <noreply@app.rentaryto.com>')
+    console.log('[SEND EMAIL] Subject:', `Nuevo documento: ${fileNameSafe}`)
+
+    // Verify RESEND_API_KEY is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('[SEND EMAIL] RESEND_API_KEY not configured!')
+      return NextResponse.json(
+        { error: 'Servicio de email no configurado' },
+        { status: 500 }
+      )
+    }
+
     // Send email using Resend
     const { data, error } = await resend.emails.send({
-      from: 'Rentaryto <noreply@rentaryto.com>',
+      from: 'Rentaryto <noreply@app.rentaryto.com>',
       to: tenant.email,
       subject: `Nuevo documento: ${fileNameSafe}`,
       html: `
@@ -106,12 +133,14 @@ export async function POST(
     })
 
     if (error) {
-      console.error('Email error:', error)
+      console.error('[SEND EMAIL] Resend API error:', error)
       return NextResponse.json(
-        { error: 'Error al enviar email' },
+        { error: `Error al enviar email: ${error.message || 'Unknown error'}` },
         { status: 500 }
       )
     }
+
+    console.log('[SEND EMAIL] Email sent successfully. ID:', data?.id)
 
     // Update document status
     await prisma.document.update({
@@ -122,11 +151,13 @@ export async function POST(
       },
     })
 
-    return NextResponse.json({ success: true })
+    console.log('[SEND EMAIL] Document status updated to sent')
+
+    return NextResponse.json({ success: true, emailId: data?.id })
   } catch (error) {
-    console.error('Error sending document:', error)
+    console.error('[SEND EMAIL] Unexpected error:', error)
     return NextResponse.json(
-      { error: 'Error al enviar documento' },
+      { error: error instanceof Error ? error.message : 'Error al enviar documento' },
       { status: 500 }
     )
   }

@@ -43,7 +43,7 @@ export const invoiceSubtypeLabels: Record<string, string> = {
 
 export const sendStatusLabels: Record<string, string> = {
   not_applicable: "N/A",
-  pending: "Pendiente",
+  pending: "Pendiente envío",
   sent: "Enviado",
 };
 

@@ -123,7 +123,8 @@ export async function POST(
 
     // Store file path instead of URL (we'll generate signed URLs when needed)
     // Create document record
-    const sendStatus = type === 'invoice' && sendNow ? 'pending' : 'not_applicable'
+    // All invoices start as 'pending' (ready to be sent)
+    const sendStatus = type === 'invoice' ? 'pending' : 'not_applicable'
     const paidStatus = type === 'invoice' ? 'unpaid' : 'not_applicable'
 
     const document = await prisma.document.create({
@@ -140,8 +141,6 @@ export async function POST(
         paidStatus,
       },
     })
-
-    // TODO: If sendNow is true and type is invoice, send email using Resend
 
     return NextResponse.json(document, { status: 201 })
   } catch (error) {
