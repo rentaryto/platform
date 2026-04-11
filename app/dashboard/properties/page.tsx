@@ -26,11 +26,17 @@ export default function PropertiesPage() {
     open: boolean;
     title: string;
     description: string;
+    confirmText?: string;
+    variant?: "default" | "destructive";
+    loading?: boolean;
     onConfirm: () => void;
   }>({
     open: false,
     title: "",
     description: "",
+    confirmText: "Confirmar",
+    variant: "default",
+    loading: false,
     onConfirm: () => {},
   });
 
@@ -49,15 +55,19 @@ export default function PropertiesPage() {
       open: true,
       title: "Eliminar inmueble",
       description: `¿Eliminar ${property.name}? Se eliminarán todos los gastos, documentos y recordatorios asociados. Esta acción no se puede deshacer.`,
+      confirmText: "Eliminar",
+      variant: "destructive",
+      loading: false,
       onConfirm: async () => {
+        setConfirmDialog((prev) => ({ ...prev, loading: true }));
         try {
           await apartmentsApi.delete(property.id);
           queryClient.invalidateQueries({ queryKey: ["apartments"] });
           queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-          setConfirmDialog({ ...confirmDialog, open: false });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
         } catch (err) {
           setAlertMessage(err instanceof Error ? err.message : "Error al eliminar inmueble");
-          setConfirmDialog({ ...confirmDialog, open: false });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
         }
       },
     });
@@ -223,8 +233,9 @@ export default function PropertiesPage() {
           title={confirmDialog.title}
           description={confirmDialog.description}
           onConfirm={confirmDialog.onConfirm}
-          variant="destructive"
-          confirmText="Eliminar"
+          variant={confirmDialog.variant}
+          confirmText={confirmDialog.confirmText}
+          loading={confirmDialog.loading}
         />
 
         {/* Alert Dialog */}

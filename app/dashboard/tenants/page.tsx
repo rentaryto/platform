@@ -26,11 +26,17 @@ export default function TenantsPage() {
     open: boolean;
     title: string;
     description: string;
+    confirmText?: string;
+    variant?: "default" | "destructive";
+    loading?: boolean;
     onConfirm: () => void;
   }>({
     open: false,
     title: "",
     description: "",
+    confirmText: "Confirmar",
+    variant: "default",
+    loading: false,
     onConfirm: () => {},
   });
 
@@ -53,14 +59,18 @@ export default function TenantsPage() {
       open: true,
       title: "Eliminar inquilino",
       description: `¿Eliminar a ${tenant.name}? Esta acción no se puede deshacer.`,
+      confirmText: "Eliminar",
+      variant: "destructive",
+      loading: false,
       onConfirm: async () => {
+        setConfirmDialog((prev) => ({ ...prev, loading: true }));
         try {
           await tenantsApi.delete(tenant.id);
           queryClient.invalidateQueries({ queryKey: ["tenants"] });
-          setConfirmDialog({ ...confirmDialog, open: false });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
         } catch (err) {
           setAlertMessage(err instanceof Error ? err.message : "Error al eliminar inquilino");
-          setConfirmDialog({ ...confirmDialog, open: false });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
         }
       },
     });
@@ -234,8 +244,9 @@ export default function TenantsPage() {
           title={confirmDialog.title}
           description={confirmDialog.description}
           onConfirm={confirmDialog.onConfirm}
-          variant="destructive"
-          confirmText="Eliminar"
+          variant={confirmDialog.variant}
+          confirmText={confirmDialog.confirmText}
+          loading={confirmDialog.loading}
         />
 
         {/* Alert Dialog */}

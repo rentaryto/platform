@@ -47,6 +47,7 @@ export default function ApartmentDetailPage() {
     description: string;
     confirmText?: string;
     variant?: "default" | "destructive";
+    loading?: boolean;
     onConfirm: () => void;
   }>({
     open: false,
@@ -54,6 +55,7 @@ export default function ApartmentDetailPage() {
     description: "",
     confirmText: "Confirmar",
     variant: "default",
+    loading: false,
     onConfirm: () => {},
   });
 
@@ -74,11 +76,17 @@ export default function ApartmentDetailPage() {
       description: "¿Seguro que quieres quitar al inquilino? Esta acción marcará el inmueble como vacío.",
       confirmText: "Quitar",
       variant: "destructive",
+      loading: false,
       onConfirm: async () => {
-        await tenantsApi.remove(id);
-        queryClient.invalidateQueries({ queryKey: ["apartment", id] });
-        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-        setConfirmDialog({ ...confirmDialog, open: false });
+        setConfirmDialog((prev) => ({ ...prev, loading: true }));
+        try {
+          await tenantsApi.remove(id);
+          queryClient.invalidateQueries({ queryKey: ["apartment", id] });
+          queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
+        } catch (error) {
+          setConfirmDialog((prev) => ({ ...prev, loading: false }));
+        }
       },
     });
   };
@@ -90,11 +98,17 @@ export default function ApartmentDetailPage() {
       description: "¿Eliminar este gasto recurrente? Esta acción no se puede deshacer.",
       confirmText: "Eliminar",
       variant: "destructive",
+      loading: false,
       onConfirm: async () => {
-        await recurringExpensesApi.delete(expenseId);
-        queryClient.invalidateQueries({ queryKey: ["apartment", id] });
-        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-        setConfirmDialog({ ...confirmDialog, open: false });
+        setConfirmDialog((prev) => ({ ...prev, loading: true }));
+        try {
+          await recurringExpensesApi.delete(expenseId);
+          queryClient.invalidateQueries({ queryKey: ["apartment", id] });
+          queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
+        } catch (error) {
+          setConfirmDialog((prev) => ({ ...prev, loading: false }));
+        }
       },
     });
   };
@@ -106,10 +120,16 @@ export default function ApartmentDetailPage() {
       description: "¿Eliminar este gasto inesperado? Esta acción no se puede deshacer.",
       confirmText: "Eliminar",
       variant: "destructive",
+      loading: false,
       onConfirm: async () => {
-        await unexpectedExpensesApi.delete(expenseId);
-        queryClient.invalidateQueries({ queryKey: ["apartment", id] });
-        setConfirmDialog({ ...confirmDialog, open: false });
+        setConfirmDialog((prev) => ({ ...prev, loading: true }));
+        try {
+          await unexpectedExpensesApi.delete(expenseId);
+          queryClient.invalidateQueries({ queryKey: ["apartment", id] });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
+        } catch (error) {
+          setConfirmDialog((prev) => ({ ...prev, loading: false }));
+        }
       },
     });
   };
@@ -121,11 +141,17 @@ export default function ApartmentDetailPage() {
       description: `¿Enviar esta factura a ${tenantName} (${tenantEmail})?`,
       confirmText: "Enviar",
       variant: "default",
+      loading: false,
       onConfirm: async () => {
-        await documentsApi.send(docId);
-        queryClient.invalidateQueries({ queryKey: ["apartment", id] });
-        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-        setConfirmDialog({ ...confirmDialog, open: false });
+        setConfirmDialog((prev) => ({ ...prev, loading: true }));
+        try {
+          await documentsApi.send(docId);
+          queryClient.invalidateQueries({ queryKey: ["apartment", id] });
+          queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
+        } catch (error) {
+          setConfirmDialog((prev) => ({ ...prev, loading: false }));
+        }
       },
     });
   };
@@ -140,11 +166,17 @@ export default function ApartmentDetailPage() {
         : `¿Marcar "${fileName}" como no pagada?`,
       confirmText: willBePaid ? "Marcar como pagada" : "Marcar como no pagada",
       variant: "default",
+      loading: false,
       onConfirm: async () => {
-        await documentsApi.markAsPaid(docId, willBePaid);
-        queryClient.invalidateQueries({ queryKey: ["apartment", id] });
-        queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-        setConfirmDialog({ ...confirmDialog, open: false });
+        setConfirmDialog((prev) => ({ ...prev, loading: true }));
+        try {
+          await documentsApi.markAsPaid(docId, willBePaid);
+          queryClient.invalidateQueries({ queryKey: ["apartment", id] });
+          queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
+        } catch (error) {
+          setConfirmDialog((prev) => ({ ...prev, loading: false }));
+        }
       },
     });
   };
@@ -165,10 +197,16 @@ export default function ApartmentDetailPage() {
       description: "¿Eliminar este documento? Esta acción no se puede deshacer.",
       confirmText: "Eliminar",
       variant: "destructive",
+      loading: false,
       onConfirm: async () => {
-        await documentsApi.delete(docId);
-        queryClient.invalidateQueries({ queryKey: ["apartment", id] });
-        setConfirmDialog({ ...confirmDialog, open: false });
+        setConfirmDialog((prev) => ({ ...prev, loading: true }));
+        try {
+          await documentsApi.delete(docId);
+          queryClient.invalidateQueries({ queryKey: ["apartment", id] });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
+        } catch (error) {
+          setConfirmDialog((prev) => ({ ...prev, loading: false }));
+        }
       },
     });
   };
@@ -187,10 +225,16 @@ export default function ApartmentDetailPage() {
       description: "¿Eliminar este recordatorio? Esta acción no se puede deshacer.",
       confirmText: "Eliminar",
       variant: "destructive",
+      loading: false,
       onConfirm: async () => {
-        await remindersApi.delete(reminderId);
-        queryClient.invalidateQueries({ queryKey: ["apartment", id] });
-        setConfirmDialog({ ...confirmDialog, open: false });
+        setConfirmDialog((prev) => ({ ...prev, loading: true }));
+        try {
+          await remindersApi.delete(reminderId);
+          queryClient.invalidateQueries({ queryKey: ["apartment", id] });
+          setConfirmDialog((prev) => ({ ...prev, open: false, loading: false }));
+        } catch (error) {
+          setConfirmDialog((prev) => ({ ...prev, loading: false }));
+        }
       },
     });
   };
@@ -707,6 +751,7 @@ export default function ApartmentDetailPage() {
           onConfirm={confirmDialog.onConfirm}
           variant={confirmDialog.variant}
           confirmText={confirmDialog.confirmText}
+          loading={confirmDialog.loading}
         />
         <MobileNav />
       </main>
