@@ -4,8 +4,25 @@ export interface User {
   name: string;
 }
 
-// Subscription type is imported from @prisma/client where needed
-// This keeps types in sync with the database schema
+// Domain types
+
+export interface Subscription {
+  id: string;
+  userId: string;
+  status: "trial" | "active" | "cancelled" | "expired";
+  plan: string;
+  maxProperties: number;
+  trialStartDate: Date;
+  trialEndDate: Date;
+  currentPeriodStart: Date | null;
+  currentPeriodEnd: Date | null;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// API DTOs
 
 export interface SubscriptionStatus {
   status: "trial" | "active" | "cancelled" | "expired";

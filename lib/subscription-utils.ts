@@ -1,4 +1,4 @@
-import type { Subscription } from '@prisma/client'
+import type { Subscription } from './types'
 
 /**
  * Calcula la fecha de fin del trial (3 meses desde la fecha de inicio)

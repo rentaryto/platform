@@ -7,7 +7,7 @@
 CREATE TABLE "Subscription" (
   "id" TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
   "userId" TEXT NOT NULL UNIQUE,
-  "status" TEXT NOT NULL DEFAULT 'trial',
+  "status" TEXT NOT NULL DEFAULT 'trial', -- valores: trial, active, cancelled, expired
   "plan" TEXT NOT NULL DEFAULT 'standard',
   "maxProperties" INTEGER NOT NULL DEFAULT 5,
   "trialStartDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -111,18 +111,11 @@ model Reminder {
   createdAt   DateTime  @default(now())
 }
 
-enum SubscriptionStatus {
-  trial
-  active
-  cancelled
-  expired
-}
-
 model Subscription {
   id                   String    @id @default(uuid())
   userId               String    @unique
   user                 User      @relation(fields: [userId], references: [id])
-  status               SubscriptionStatus    @default(trial)
+  status               String    @default("trial") // trial, active, cancelled, expired
   plan                 String    @default("standard") // standard (9€)
   maxProperties        Int       @default(5)
   trialStartDate       DateTime  @default(now())
