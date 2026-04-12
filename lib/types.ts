@@ -40,6 +40,7 @@ export interface Document {
   id: string;
   apartmentId: string;
   type: "contract" | "contract_extension" | "invoice" | "other";
+  subtype?: string | null;
   fileName: string;
   fileUrl: string;
   description?: string;
@@ -103,12 +104,16 @@ export interface DashboardData {
     id: string;
     apartmentName: string;
     fileName: string;
+    sendStatus: string;
+    paidStatus: string;
     createdAt: string;
   }>;
   upcomingReminders: Array<{
     id: string;
     title: string;
+    description: string | null;
     dueDate: string;
+    status: string;
     apartmentName: string;
   }>;
 }
