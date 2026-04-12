@@ -10,10 +10,10 @@ export interface Subscription {
   status: "trial" | "active" | "cancelled" | "expired";
   plan: string;
   maxProperties: number;
-  trialStartDate: string;
-  trialEndDate: string;
-  currentPeriodStart?: string | null;
-  currentPeriodEnd?: string | null;
+  trialStartDate: Date
+  trialEndDate: Date
+  currentPeriodStart?: Date | null;
+  currentPeriodEnd?: Date | null;
   stripeCustomerId?: string | null;
   stripeSubscriptionId?: string | null;
   createdAt: string;
