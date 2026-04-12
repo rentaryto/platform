@@ -85,13 +85,13 @@ export const apartmentsApi = {
   get(id: string) {
     return apiFetch<ApartmentDetail>(`/apartments/${id}`);
   },
-  create(data: { name: string; address: string; cadastralReference?: string; rentAmount: number }) {
+  create(data: { name: string; address: string; cadastralReference?: string; rentAmount: number; purchasePrice?: number }) {
     return apiFetch<ApartmentSummary>("/apartments", {
       method: "POST",
       body: JSON.stringify(data),
     });
   },
-  update(id: string, data: Partial<{ name: string; address: string; cadastralReference: string; rentAmount: number; status: string }>) {
+  update(id: string, data: Partial<{ name: string; address: string; cadastralReference: string; rentAmount: number; purchasePrice: number; status: string }>) {
     return apiFetch<ApartmentSummary>(`/apartments/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
