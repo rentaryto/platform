@@ -354,8 +354,14 @@ export default function ApartmentDetailPage() {
                       ? ((monthlyProfit / apartment.rentAmount) * 100).toFixed(1)
                       : "0.0";
 
+                    const annualReturn = apartment.purchasePrice && apartment.purchasePrice > 0
+                      ? ((monthlyProfit * 12 / apartment.purchasePrice) * 100).toFixed(2)
+                      : null;
+
+                    const gridCols = apartment.purchasePrice ? "sm:grid-cols-4" : "sm:grid-cols-3";
+
                     return (
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className={`grid grid-cols-1 ${gridCols} gap-4`}>
                         <div className="space-y-1">
                           <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <TrendingUp className="h-3 w-3" /> Ingresos
@@ -392,8 +398,22 @@ export default function ApartmentDetailPage() {
                               {profitPercentage}%
                             </span>
                           </div>
-                          <p className="text-xs text-muted-foreground">rendimiento</p>
+                          <p className="text-xs text-muted-foreground">mensual</p>
                         </div>
+
+                        {apartment.purchasePrice && annualReturn && (
+                          <div className="space-y-1">
+                            <p className="text-xs text-muted-foreground flex items-center gap-1">
+                              <DollarSign className="h-3 w-3" /> Rendimiento Anual
+                            </p>
+                            <p className={`text-lg font-semibold ${
+                              parseFloat(annualReturn) >= 0 ? "text-purple-600" : "text-red-600"
+                            }`}>
+                              {annualReturn}%
+                            </p>
+                            <p className="text-xs text-muted-foreground">sobre inversión</p>
+                          </div>
+                        )}
                       </div>
                     );
                   })()}

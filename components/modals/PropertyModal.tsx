@@ -17,6 +17,7 @@ const schema = z.object({
   address: z.string().min(1, "La dirección es obligatoria"),
   cadastralReference: z.string().optional(),
   rentAmount: z.string().min(1, "La renta es obligatoria").transform((v) => parseFloat(v)),
+  purchasePrice: z.string().optional().transform((v) => v && v.trim() !== "" ? parseFloat(v) : undefined),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -43,9 +44,10 @@ export function PropertyModal({ property, open, onOpenChange }: Props) {
         address: property.address,
         cadastralReference: property.cadastralReference || "",
         rentAmount: String(property.rentAmount) as any,
+        purchasePrice: property.purchasePrice ? String(property.purchasePrice) : ("" as any),
       });
     } else {
-      reset({ name: "", address: "", cadastralReference: "", rentAmount: "" as any });
+      reset({ name: "", address: "", cadastralReference: "", rentAmount: "" as any, purchasePrice: "" as any });
     }
   }, [property, reset]);
 
@@ -59,6 +61,7 @@ export function PropertyModal({ property, open, onOpenChange }: Props) {
           address: data.address,
           cadastralReference: data.cadastralReference,
           rentAmount: data.rentAmount,
+          purchasePrice: data.purchasePrice,
         });
       } else {
         await apartmentsApi.create({
@@ -66,6 +69,7 @@ export function PropertyModal({ property, open, onOpenChange }: Props) {
           address: data.address,
           cadastralReference: data.cadastralReference,
           rentAmount: data.rentAmount,
+          purchasePrice: data.purchasePrice,
         });
       }
       await queryClient.invalidateQueries({ queryKey: ["apartments"] });
@@ -99,12 +103,18 @@ export function PropertyModal({ property, open, onOpenChange }: Props) {
           <div className="space-y-2">
             <Label>Referencia Catastral (opcional)</Label>
             <Input placeholder="1234567VG1234N0001AB" {...register("cadastralReference")} />
-            <p className="text-xs text-muted-foreground">Para informes de Hacienda</p>
+            <p className="text-xs text-muted-foreground">Usaremos para el informe de Hacienda que envías a tu gestor</p>
           </div>
           <div className="space-y-2">
             <Label>Renta mensual (€)</Label>
             <Input type="number" step="0.01" placeholder="570" {...register("rentAmount")} />
             {errors.rentAmount && <p className="text-xs text-red-500">{errors.rentAmount.message}</p>}
+          </div>
+          <div className="space-y-2">
+            <Label>Precio de compra (€, opcional)</Label>
+            <Input type="number" step="0.01" placeholder="150000" {...register("purchasePrice")} />
+            <p className="text-xs text-muted-foreground">Usaremos para cálculo de rendimiento anual</p>
+            {errors.purchasePrice && <p className="text-xs text-red-500">{errors.purchasePrice.message}</p>}
           </div>
           {error && <p className="text-sm text-red-500">{error}</p>}
           <DialogFooter>

@@ -27,6 +27,7 @@ model Apartment {
   address            String
   cadastralReference String?
   rentAmount         Decimal
+  purchasePrice      Decimal?
   status             String   @default("occupied")
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt

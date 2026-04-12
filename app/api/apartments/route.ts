@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json()
-    const { name, address, cadastralReference, rentAmount } = body
+    const { name, address, cadastralReference, rentAmount, purchasePrice } = body
 
     if (!name || !address || !rentAmount) {
       return NextResponse.json(
@@ -48,6 +48,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Validate purchase price if provided
+    if (purchasePrice !== undefined && purchasePrice !== null && !isValidAmount(purchasePrice)) {
+      return NextResponse.json(
+        { error: 'Precio de compra inválido' },
+        { status: 400 }
+      )
+    }
+
     // Sanitize inputs
     const sanitizedName = sanitizeString(name, 200)
     const sanitizedAddress = sanitizeString(address, 500)
@@ -60,6 +68,7 @@ export async function POST(request: NextRequest) {
         address: sanitizedAddress,
         cadastralReference: sanitizedCadastral,
         rentAmount,
+        purchasePrice: purchasePrice || null,
         status: 'vacant',
       },
     })

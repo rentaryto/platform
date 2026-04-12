@@ -68,6 +68,7 @@ export interface ApartmentSummary {
   address: string;
   cadastralReference?: string | null;
   rentAmount: number;
+  purchasePrice?: number | null;
   status: "occupied" | "vacant";
   currentTenant: { id: string; name: string; email: string } | null;
 }
@@ -78,6 +79,7 @@ export interface ApartmentDetail {
   address: string;
   cadastralReference?: string | null;
   rentAmount: number;
+  purchasePrice?: number | null;
   status: "occupied" | "vacant";
   currentTenant: Tenant | null;
   recurringExpenses: RecurringExpense[];

@@ -51,7 +51,7 @@ export async function PATCH(
 
   try {
     const body = await request.json()
-    const { name, address, cadastralReference, rentAmount, status } = body
+    const { name, address, cadastralReference, rentAmount, purchasePrice, status } = body
 
     // Verify ownership
     const apartment = await prisma.apartment.findFirst({
@@ -72,6 +72,7 @@ export async function PATCH(
         ...(address && { address }),
         ...(cadastralReference !== undefined && { cadastralReference }),
         ...(rentAmount && { rentAmount }),
+        ...(purchasePrice !== undefined && { purchasePrice }),
         ...(status && { status }),
       },
     })
