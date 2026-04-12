@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, Home, FileText, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Home, FileText, LogOut, Clock, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getUser, logout } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
+import type { SubscriptionStatus } from "@/lib/types";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -15,7 +16,11 @@ const navItems = [
   { href: "/dashboard/hacienda", label: "Hacienda", icon: FileText },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  subscription?: SubscriptionStatus | null;
+}
+
+export function Sidebar({ subscription }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const user = getUser();
@@ -60,6 +65,22 @@ export function Sidebar() {
 
       {/* User + Logout */}
       <div className="p-4 border-t border-gray-700">
+        {/* Trial info - discreto */}
+        {subscription && subscription.status === 'trial' && (
+          <div className="mb-3 px-3 py-2 bg-gray-800 rounded-lg">
+            <div className="flex items-center gap-2 mb-1">
+              <Clock className="h-3 w-3 text-blue-400" />
+              <p className="text-xs text-gray-300 font-medium">
+                {subscription.daysRemaining} días restantes
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-gray-400">
+              <Building2 className="h-3 w-3" />
+              <span>{subscription.currentProperties} / {subscription.maxProperties} inmuebles</span>
+            </div>
+          </div>
+        )}
+
         {user && (
           <div className="mb-3 px-3">
             <p className="text-xs text-gray-400">Conectado como</p>

@@ -13,7 +13,6 @@ import { PendingInvoices } from "@/components/dashboard/PendingInvoices";
 import { UpcomingReminders } from "@/components/dashboard/UpcomingReminders";
 import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
 import { InstallAppBanner } from "@/components/dashboard/InstallAppBanner";
-import { TrialBanner } from "@/components/dashboard/TrialBanner";
 import { TrialExpiredModal } from "@/components/dashboard/TrialExpiredModal";
 
 export default function DashboardPage() {
@@ -90,7 +89,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+      <Sidebar subscription={subscription} />
       <main className="flex-1 p-4 md:p-6 overflow-auto pb-24 md:pb-6">
         <div className="max-w-6xl mx-auto space-y-6">
           <div>
@@ -115,8 +114,6 @@ export default function DashboardPage() {
           {data && (
             <>
               <InstallAppBanner />
-
-              {subscription && <TrialBanner subscription={subscription} />}
 
               <StatsCards
                 totalMonthlyIncome={data.totalMonthlyIncome}
