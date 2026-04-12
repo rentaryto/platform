@@ -52,40 +52,45 @@ export function PendingInvoices({ invoices }: { invoices: PendingInvoice[] }) {
           </p>
         ) : (
           <div className="space-y-3">
-            {invoices.map((invoice) => (
-              <div
-                key={invoice.id}
-                className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-orange-50 rounded-lg border border-orange-100"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 mb-1">
+            {invoices.map((invoice) => {
+              const bgColor = invoice.paidStatus === 'paid' ? 'bg-green-50' : 'bg-orange-50';
+              const borderColor = invoice.paidStatus === 'paid' ? 'border-green-200' : 'border-orange-100';
+
+              return (
+                <div
+                  key={invoice.id}
+                  className={`flex items-center justify-between p-3 rounded-lg border ${bgColor} ${borderColor}`}
+                >
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{invoice.fileName}</p>
+                    <p className="text-xs text-muted-foreground">{invoice.apartmentName}</p>
                   </div>
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 ml-2 flex-shrink-0">
                     {invoice.sendStatus === 'pending' && (
                       <Badge variant="orange" className="text-xs">Pendiente envío</Badge>
                     )}
                     {invoice.paidStatus === 'unpaid' && (
                       <Badge variant="destructive" className="text-xs">No pagada</Badge>
                     )}
+                    {invoice.paidStatus === 'paid' && (
+                      <Badge variant="success" className="text-xs">Pagada</Badge>
+                    )}
+                    {invoice.sendStatus === 'pending' && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 w-6 p-0 text-orange-700 hover:bg-orange-100"
+                        onClick={() => handleSend(invoice.id)}
+                        disabled={sending === invoice.id}
+                        title="Enviar factura"
+                      >
+                        <Send className="h-3 w-3" />
+                      </Button>
+                    )}
                   </div>
-                  <p className="text-xs text-muted-foreground">{invoice.apartmentName}</p>
-                  <p className="text-xs text-muted-foreground">{formatDate(invoice.createdAt)}</p>
                 </div>
-                {invoice.sendStatus === 'pending' && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="w-full sm:w-auto flex-shrink-0 border-orange-300 text-orange-700 hover:bg-orange-100"
-                    onClick={() => handleSend(invoice.id)}
-                    disabled={sending === invoice.id}
-                  >
-                    <Send className="h-3 w-3 sm:mr-1" />
-                    <span className="ml-1">{sending === invoice.id ? "Enviando..." : "Enviar"}</span>
-                  </Button>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>
