@@ -46,12 +46,15 @@ export async function GET(request: NextRequest) {
 
   const monthlyProfit = totalMonthlyIncome - totalMonthlyExpenses
 
-  // Get pending invoices (documents of type "invoice" with sendStatus "pending")
+  // Get pending invoices (sendStatus='pending' OR paidStatus='unpaid')
   const pendingInvoices = await prisma.document.findMany({
     where: {
       apartment: { userId: user.id },
       type: 'invoice',
-      sendStatus: 'pending',
+      OR: [
+        { sendStatus: 'pending' },
+        { paidStatus: 'unpaid' },
+      ],
     },
     include: {
       apartment: {
@@ -61,15 +64,13 @@ export async function GET(request: NextRequest) {
       },
     },
     orderBy: { createdAt: 'desc' },
-    take: 5,
+    take: 10,
   })
 
-  // Get upcoming reminders
+  // Get last 10 reminders
   const upcomingReminders = await prisma.reminder.findMany({
     where: {
       apartment: { userId: user.id },
-      status: 'pending',
-      dueDate: { gte: new Date() },
     },
     include: {
       apartment: {
@@ -78,8 +79,8 @@ export async function GET(request: NextRequest) {
         },
       },
     },
-    orderBy: { dueDate: 'asc' },
-    take: 5,
+    orderBy: { dueDate: 'desc' },
+    take: 10,
   })
 
   return NextResponse.json({
@@ -98,13 +99,17 @@ export async function GET(request: NextRequest) {
       apartmentName: inv.apartment.name,
       fileName: inv.fileName,
       description: inv.description,
+      sendStatus: inv.sendStatus,
+      paidStatus: inv.paidStatus,
       createdAt: inv.createdAt,
     })),
     upcomingReminders: upcomingReminders.map((rem) => ({
       id: rem.id,
       apartmentName: rem.apartment.name,
       title: rem.title,
+      description: rem.description,
       dueDate: rem.dueDate,
+      status: rem.status,
     })),
   })
 }
