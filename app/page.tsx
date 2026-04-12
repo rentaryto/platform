@@ -112,7 +112,7 @@ export default function LandingPage() {
           <Card className="border-2 border-blue-500 relative">
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
               <span className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                1 mes gratis
+                3 meses gratis
               </span>
             </div>
             <CardContent className="pt-12 pb-8">

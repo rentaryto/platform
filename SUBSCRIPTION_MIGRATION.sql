@@ -1,5 +1,7 @@
 -- Migración manual para Supabase
 -- Ejecutar este SQL en el SQL Editor de Supabase
+--
+-- NOTA: Trial period es de 3 MESES desde trialStartDate
 
 -- 1. Crear tabla Subscription
 CREATE TABLE "Subscription" (
@@ -29,7 +31,7 @@ CREATE UNIQUE INDEX "Subscription_userId_key" ON "Subscription"("userId");
 --   "id" as "userId",
 --   'trial' as "status",
 --   CURRENT_TIMESTAMP as "trialStartDate",
---   CURRENT_TIMESTAMP + INTERVAL '1 month' as "trialEndDate"
+--   CURRENT_TIMESTAMP + INTERVAL '3 months' as "trialEndDate"
 -- FROM "User"
 -- WHERE NOT EXISTS (
 --   SELECT 1 FROM "Subscription" WHERE "Subscription"."userId" = "User"."id"

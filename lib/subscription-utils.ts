@@ -1,11 +1,11 @@
-import type { Subscription } from './types'
+import type { Subscription } from '@prisma/client'
 
 /**
- * Calcula la fecha de fin del trial (1 mes desde la fecha de inicio)
+ * Calcula la fecha de fin del trial (3 meses desde la fecha de inicio)
  */
 export function calculateTrialEndDate(startDate: Date): Date {
   const endDate = new Date(startDate)
-  endDate.setMonth(endDate.getMonth() + 1)
+  endDate.setMonth(endDate.getMonth() + 3)
   return endDate
 }
 
