@@ -64,10 +64,10 @@ export async function GET(request: NextRequest) {
       },
     },
     orderBy: { createdAt: 'desc' },
-    take: 10,
+    take: 5,
   })
 
-  // Get last 10 reminders
+  // Get last 5 reminders
   const upcomingReminders = await prisma.reminder.findMany({
     where: {
       apartment: { userId: user.id },
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
       },
     },
     orderBy: { dueDate: 'desc' },
-    take: 10,
+    take: 5,
   })
 
   return NextResponse.json({
