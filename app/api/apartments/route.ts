@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { isValidAmount, sanitizeString } from '@/lib/validation'
 import { canAddProperty, isTrialExpired } from '@/lib/subscription-utils'
+import { toDomainSubscription } from '@/lib/mappers/subscription'
 
 export async function GET(request: NextRequest) {
   const user = await requireAuth(request)
@@ -58,28 +59,31 @@ export async function POST(request: NextRequest) {
     }
 
     // Check subscription limits
-    const subscription = await prisma.subscription.findUnique({
+    const prismaSubscription = await prisma.subscription.findUnique({
       where: { userId: user.id },
     })
 
-    if (!subscription) {
+    if (!prismaSubscription) {
       return NextResponse.json(
         { error: 'No tienes una suscripción activa' },
         { status: 403 }
       )
     }
 
+    // Convertir a tipo de dominio
+    let subscription = toDomainSubscription(prismaSubscription)
+
     // Update status if trial expired
-    let currentSubscription = subscription
     if (isTrialExpired(subscription) && subscription.status === 'trial') {
-      currentSubscription = await prisma.subscription.update({
+      const updatedPrisma = await prisma.subscription.update({
         where: { id: subscription.id },
         data: { status: 'expired' },
       })
+      subscription = toDomainSubscription(updatedPrisma)
     }
 
     // Check if subscription is active or in trial
-    if (currentSubscription.status === 'expired' || currentSubscription.status === 'cancelled') {
+    if (subscription.status === 'expired' || subscription.status === 'cancelled') {
       return NextResponse.json(
         { error: 'Tu período de prueba ha terminado. Contacta con nosotros para activar tu plan.' },
         { status: 403 }
@@ -92,9 +96,9 @@ export async function POST(request: NextRequest) {
     })
 
     // Check property limit
-    if (!canAddProperty(currentSubscription, currentCount)) {
+    if (!canAddProperty(subscription, currentCount)) {
       return NextResponse.json(
-        { error: `Has alcanzado el límite de ${currentSubscription.maxProperties} inmuebles. Contacta con nosotros para ampliar tu plan: info@rentaryto.com` },
+        { error: `Has alcanzado el límite de ${subscription.maxProperties} inmuebles. Contacta con nosotros para ampliar tu plan: info@rentaryto.com` },
         { status: 403 }
       )
     }

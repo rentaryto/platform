@@ -2,6 +2,7 @@ import { requireAuth } from '@/lib/api-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getSubscriptionStatus, isTrialExpired } from '@/lib/subscription-utils'
+import { toDomainSubscription } from '@/lib/mappers/subscription'
 
 export async function GET(request: NextRequest) {
   const user = await requireAuth(request)
@@ -12,24 +13,27 @@ export async function GET(request: NextRequest) {
 
   try {
     // Obtener suscripción del usuario
-    const subscription = await prisma.subscription.findUnique({
+    const prismaSubscription = await prisma.subscription.findUnique({
       where: { userId: user.id },
     })
 
-    if (!subscription) {
+    if (!prismaSubscription) {
       return NextResponse.json(
         { error: 'No se encontró suscripción' },
         { status: 404 }
       )
     }
 
+    // Convertir a tipo de dominio
+    let subscription = toDomainSubscription(prismaSubscription)
+
     // Actualizar status si el trial ha expirado
-    let currentSubscription = subscription
     if (isTrialExpired(subscription) && subscription.status === 'trial') {
-      currentSubscription = await prisma.subscription.update({
+      const updatedPrisma = await prisma.subscription.update({
         where: { id: subscription.id },
         data: { status: 'expired' },
       })
+      subscription = toDomainSubscription(updatedPrisma)
     }
 
     // Contar propiedades actuales
@@ -38,7 +42,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Obtener estado completo
-    const status = getSubscriptionStatus(currentSubscription, currentProperties)
+    const status = getSubscriptionStatus(subscription, currentProperties)
 
     return NextResponse.json(status)
   } catch (error) {
