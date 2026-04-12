@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { isValidAmount, sanitizeString } from '@/lib/validation'
 import { canAddProperty, isTrialExpired } from '@/lib/subscription-utils'
 import { toDomainSubscription } from '@/lib/mappers/subscription'
+import { ensureSubscription } from '@/lib/ensure-subscription'
 
 export async function GET(request: NextRequest) {
   const user = await requireAuth(request)
@@ -58,20 +59,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check subscription limits
-    const prismaSubscription = await prisma.subscription.findUnique({
-      where: { userId: user.id },
-    })
-
-    if (!prismaSubscription) {
-      return NextResponse.json(
-        { error: 'No tienes una suscripción activa' },
-        { status: 403 }
-      )
-    }
-
-    // Convertir a tipo de dominio
-    let subscription = toDomainSubscription(prismaSubscription)
+    // Check subscription limits (garantiza que existe)
+    let subscription = await ensureSubscription(user.id)
 
     // Update status if trial expired
     if (isTrialExpired(subscription) && subscription.status === 'trial') {

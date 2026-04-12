@@ -33,10 +33,11 @@ export default function DashboardPage() {
     enabled: isAuthenticated(),
   });
 
-  const { data: subscription } = useQuery({
+  const { data: subscription, isLoading: subscriptionLoading, error: subscriptionError } = useQuery({
     queryKey: ["subscription"],
     queryFn: subscriptionApi.get,
     enabled: isAuthenticated(),
+    retry: 1, // Solo reintentar una vez
   });
 
   // Verificar si mostrar onboarding
@@ -57,6 +58,35 @@ export default function DashboardPage() {
   };
 
   if (!isAuthenticated()) return null;
+
+  // Bloquear acceso si trial ha expirado
+  if (!subscriptionLoading && subscription?.status === 'expired') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <TrialExpiredModal open={true} />
+      </div>
+    );
+  }
+
+  // Mostrar error si no se pudo cargar subscription
+  if (!subscriptionLoading && subscriptionError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg text-center">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Error al cargar suscripción</h2>
+          <p className="text-gray-600 mb-6">
+            No pudimos verificar tu suscripción. Por favor, intenta recargar la página o contacta con soporte.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Recargar página
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -121,11 +151,6 @@ export default function DashboardPage() {
         open={showOnboarding}
         onComplete={handleOnboardingComplete}
       />
-
-      {/* Trial Expired Modal */}
-      {subscription && (
-        <TrialExpiredModal open={subscription.status === 'expired'} />
-      )}
 
       <MobileNav />
     </div>

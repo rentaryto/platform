@@ -24,20 +24,32 @@ CREATE TABLE "Subscription" (
 -- 2. Crear índice
 CREATE UNIQUE INDEX "Subscription_userId_key" ON "Subscription"("userId");
 
--- 3. Crear suscripción trial para usuarios existentes (opcional, solo si hay usuarios)
--- IMPORTANTE: Ajustar las fechas según necesites
--- INSERT INTO "Subscription" ("userId", "status", "trialStartDate", "trialEndDate")
--- SELECT
---   "id" as "userId",
---   'trial' as "status",
---   CURRENT_TIMESTAMP as "trialStartDate",
---   CURRENT_TIMESTAMP + INTERVAL '3 months' as "trialEndDate"
--- FROM "User"
--- WHERE NOT EXISTS (
---   SELECT 1 FROM "Subscription" WHERE "Subscription"."userId" = "User"."id"
--- );
+-- 3. Crear subscriptions para TODOS los usuarios existentes
+-- IMPORTANTE: Ejecuta esto después de crear la tabla
+-- Los usuarios existentes reciben plan 'legacy' con acceso extendido
+INSERT INTO "Subscription" ("userId", "status", "trialStartDate", "trialEndDate", "plan", "maxProperties")
+SELECT
+  u."id" as "userId",
+  'active' as "status",  -- Usuarios existentes → activos (recompensa early adopters)
+  CURRENT_TIMESTAMP as "trialStartDate",
+  CURRENT_TIMESTAMP + INTERVAL '1 year' as "trialEndDate",
+  'legacy' as "plan",  -- Plan especial para usuarios existentes
+  100 as "maxProperties"  -- Sin límite práctico (vs 5 de usuarios nuevos)
+FROM "User" u
+WHERE NOT EXISTS (
+  SELECT 1 FROM "Subscription" s WHERE s."userId" = u."id"
+);
 
--- Para tu usuario específico, ejecuta esto después de la migración:
+-- 4. (Opcional) Para tu usuario administrador específicamente:
+-- Ejecuta esto con tu user ID si quieres acceso ilimitado
 -- UPDATE "Subscription"
--- SET "status" = 'active', "trialEndDate" = CURRENT_TIMESTAMP + INTERVAL '1 year'
--- WHERE "userId" = 'TU_USER_ID';
+-- SET "status" = 'active',
+--     "trialEndDate" = CURRENT_TIMESTAMP + INTERVAL '10 years',
+--     "plan" = 'admin',
+--     "maxProperties" = 999
+-- WHERE "userId" = 'TU_USER_ID_AQUI';
+
+-- NOTAS:
+-- - Los nuevos usuarios automáticamente reciben trial de 3 meses (handled by code)
+-- - Los usuarios existentes reciben plan 'legacy' con 1 año + 100 propiedades
+-- - Esto es justo para early adopters que ya están usando el producto
