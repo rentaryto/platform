@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { documentsApi } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
-import { FileText, Send } from "lucide-react";
+import { FileText, Send, CheckCircle } from "lucide-react";
 
 interface PendingInvoice {
   id: string;
@@ -21,6 +21,7 @@ interface PendingInvoice {
 export function PendingInvoices({ invoices }: { invoices: PendingInvoice[] }) {
   const queryClient = useQueryClient();
   const [sending, setSending] = useState<string | null>(null);
+  const [marking, setMarking] = useState<string | null>(null);
 
   const handleSend = async (id: string) => {
     try {
@@ -31,6 +32,19 @@ export function PendingInvoices({ invoices }: { invoices: PendingInvoice[] }) {
       console.error("Error al enviar factura:", err);
     } finally {
       setSending(null);
+    }
+  };
+
+  const handleMarkAsPaid = async (id: string, currentStatus: string) => {
+    try {
+      setMarking(id);
+      const paid = currentStatus !== 'paid';
+      await documentsApi.markAsPaid(id, paid);
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    } catch (err) {
+      console.error("Error al marcar factura:", err);
+    } finally {
+      setMarking(null);
     }
   };
 
@@ -87,6 +101,16 @@ export function PendingInvoices({ invoices }: { invoices: PendingInvoice[] }) {
                         <Send className="h-3 w-3" />
                       </Button>
                     )}
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className={`h-6 w-6 p-0 ${invoice.paidStatus === 'paid' ? 'text-green-700 hover:bg-green-100' : 'text-gray-500 hover:bg-gray-100'}`}
+                      onClick={() => handleMarkAsPaid(invoice.id, invoice.paidStatus)}
+                      disabled={marking === invoice.id}
+                      title={invoice.paidStatus === 'paid' ? 'Marcar como no pagada' : 'Marcar como pagada'}
+                    >
+                      <CheckCircle className={`h-3 w-3 ${invoice.paidStatus === 'paid' ? 'fill-current' : ''}`} />
+                    </Button>
                   </div>
                 </div>
               );

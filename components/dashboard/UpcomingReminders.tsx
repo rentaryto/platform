@@ -1,7 +1,13 @@
+"use client";
+
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
-import { Bell } from "lucide-react";
+import { remindersApi } from "@/lib/api";
+import { Bell, CheckCircle } from "lucide-react";
 
 interface UpcomingReminder {
   id: string;
@@ -13,6 +19,8 @@ interface UpcomingReminder {
 }
 
 export function UpcomingReminders({ reminders }: { reminders: UpcomingReminder[] }) {
+  const queryClient = useQueryClient();
+  const [marking, setMarking] = useState<string | null>(null);
   const today = new Date();
 
   const getUrgencyVariant = (dueDate: string) => {
@@ -22,6 +30,19 @@ export function UpcomingReminders({ reminders }: { reminders: UpcomingReminder[]
     if (diffDays <= 7) return "orange";
     if (diffDays <= 30) return "warning";
     return "secondary";
+  };
+
+  const handleMarkAsDone = async (id: string, currentStatus: string) => {
+    try {
+      setMarking(id);
+      const newStatus = currentStatus === 'done' ? 'pending' : 'done';
+      await remindersApi.update(id, { status: newStatus });
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    } catch (err) {
+      console.error("Error al marcar recordatorio:", err);
+    } finally {
+      setMarking(null);
+    }
   };
 
   return (
@@ -66,6 +87,16 @@ export function UpcomingReminders({ reminders }: { reminders: UpcomingReminder[]
                     <Badge variant={getUrgencyVariant(reminder.dueDate)} className="text-xs">
                       {formatDate(reminder.dueDate)}
                     </Badge>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className={`h-6 w-6 p-0 ${reminder.status === 'done' ? 'text-green-700 hover:bg-green-100' : 'text-gray-500 hover:bg-gray-100'}`}
+                      onClick={() => handleMarkAsDone(reminder.id, reminder.status)}
+                      disabled={marking === reminder.id}
+                      title={reminder.status === 'done' ? 'Marcar como pendiente' : 'Marcar como hecho'}
+                    >
+                      <CheckCircle className={`h-3 w-3 ${reminder.status === 'done' ? 'fill-current' : ''}`} />
+                    </Button>
                   </div>
                 </div>
               );
