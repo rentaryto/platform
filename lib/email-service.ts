@@ -131,7 +131,7 @@ export async function sendDocumentEmail({ documentId, userId }: SendDocumentEmai
       <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #1f2937; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
 
         <div style="margin-bottom: 32px;">
-          <p style="margin: 0 0 20px 0; font-size: 18px; color: #1f2937;">
+          <p style="margin: 0 0 20px 0; font-size: 16px; color: #1f2937;">
             Hola ${tenantFirstName},
           </p>
           <p style="margin: 0; font-size: 16px; color: #1f2937; line-height: 1.5;">
@@ -139,7 +139,7 @@ export async function sendDocumentEmail({ documentId, userId }: SendDocumentEmai
           </p>
         </div>
 
-        <div style="margin: 32px 0; text-align: center;">
+        <div style="margin: 32px 0;">
           <a href="${urlData.signedUrl}"
              style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-weight: 500; font-size: 16px;">
             Ver documento
@@ -147,13 +147,13 @@ export async function sendDocumentEmail({ documentId, userId }: SendDocumentEmai
         </div>
 
         <div style="margin-top: 48px;">
-          <p style="margin: 0 0 4px 0; font-size: 15px; color: #6b7280;">
+          <p style="margin: 0 0 4px 0; font-size: 16px; color: #6b7280;">
             Saludos,
           </p>
-          <p style="margin: 0 0 32px 0; font-size: 15px; color: #1f2937;">
+          <p style="margin: 0 0 32px 0; font-size: 16px; color: #1f2937;">
             <strong>${userFirstName}</strong>
           </p>
-          <p style="margin: 0; font-size: 13px; color: #9ca3af;">
+          <p style="margin: 0; font-size: 16px; color: #9ca3af;">
             Este enlace estará disponible durante 1 año.
           </p>
         </div>
