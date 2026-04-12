@@ -4,6 +4,30 @@ export interface User {
   name: string;
 }
 
+export interface Subscription {
+  id: string;
+  userId: string;
+  status: "trial" | "active" | "cancelled" | "expired";
+  plan: string;
+  maxProperties: number;
+  trialStartDate: string;
+  trialEndDate: string;
+  currentPeriodStart?: string | null;
+  currentPeriodEnd?: string | null;
+  stripeCustomerId?: string | null;
+  stripeSubscriptionId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubscriptionStatus {
+  status: "trial" | "active" | "cancelled" | "expired";
+  daysRemaining: number;
+  maxProperties: number;
+  currentProperties: number;
+  canAddMore: boolean;
+}
+
 export interface Tenant {
   id: string;
   name: string;

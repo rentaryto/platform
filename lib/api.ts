@@ -9,6 +9,7 @@ import type {
   Document,
   Reminder,
   TaxReportData,
+  SubscriptionStatus,
 } from "./types";
 
 const API_BASE_URL = "/api";
@@ -251,5 +252,12 @@ export const remindersApi = {
 export const taxReportApi = {
   get(year: number) {
     return apiFetch<TaxReportData>(`/tax-report/${year}`);
+  },
+};
+
+// ─── Subscription ────────────────────────────────────────────────────────────
+export const subscriptionApi = {
+  get() {
+    return apiFetch<SubscriptionStatus>("/subscription");
   },
 };

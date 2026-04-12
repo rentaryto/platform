@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building2, Euro, FileText, BarChart3, CheckCircle } from "lucide-react";
+import { Building2, Euro, FileText, BarChart3, CheckCircle, Check } from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -93,6 +93,82 @@ export default function LandingPage() {
               <h3 className="font-semibold text-lg mb-2">Recordatorios</h3>
               <p className="text-gray-600 text-sm">
                 Nunca olvides pagos de IBI, seguros o subidas de IPC con recordatorios automáticos.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="max-w-4xl mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
+          Precio simple y transparente
+        </h2>
+        <p className="text-center text-gray-600 mb-12">
+          Un único plan con todo lo que necesitas
+        </p>
+
+        <div className="max-w-md mx-auto">
+          <Card className="border-2 border-blue-500 relative">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                1 mes gratis
+              </span>
+            </div>
+            <CardContent className="pt-12 pb-8">
+              <div className="text-center mb-6">
+                <div className="flex items-baseline justify-center gap-2 mb-2">
+                  <span className="text-5xl font-bold text-gray-900">9€</span>
+                  <span className="text-gray-600">/mes</span>
+                </div>
+                <p className="text-sm text-gray-600">Hasta 5 inmuebles</p>
+              </div>
+
+              <div className="space-y-3 mb-8">
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Gestión de inmuebles</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Gestión de inquilinos</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Control de gastos</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Contratos y facturas</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Envío a inquilinos</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Recordatorios</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Documentación para Hacienda</span>
+                </div>
+              </div>
+
+              <Link href="/signup">
+                <Button className="w-full text-lg py-6 mb-4">
+                  Empezar gratis
+                </Button>
+              </Link>
+
+              <p className="text-center text-sm text-gray-600">
+                ¿Necesitas más de 5 inmuebles?{" "}
+                <a
+                  href="mailto:info@rentaryto.com"
+                  className="text-blue-600 hover:underline font-medium"
+                >
+                  Contacta con nosotros
+                </a>
               </p>
             </CardContent>
           </Card>

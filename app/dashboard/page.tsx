@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { isAuthenticated } from "@/lib/auth";
-import { dashboardApi } from "@/lib/api";
+import { dashboardApi, subscriptionApi } from "@/lib/api";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { StatsCards } from "@/components/dashboard/StatsCards";
@@ -13,6 +13,8 @@ import { PendingInvoices } from "@/components/dashboard/PendingInvoices";
 import { UpcomingReminders } from "@/components/dashboard/UpcomingReminders";
 import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
 import { InstallAppBanner } from "@/components/dashboard/InstallAppBanner";
+import { TrialBanner } from "@/components/dashboard/TrialBanner";
+import { TrialExpiredModal } from "@/components/dashboard/TrialExpiredModal";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -28,6 +30,12 @@ export default function DashboardPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["dashboard"],
     queryFn: dashboardApi.get,
+    enabled: isAuthenticated(),
+  });
+
+  const { data: subscription } = useQuery({
+    queryKey: ["subscription"],
+    queryFn: subscriptionApi.get,
     enabled: isAuthenticated(),
   });
 
@@ -78,6 +86,8 @@ export default function DashboardPage() {
             <>
               <InstallAppBanner />
 
+              {subscription && <TrialBanner subscription={subscription} />}
+
               <StatsCards
                 totalMonthlyIncome={data.totalMonthlyIncome}
                 totalMonthlyExpenses={data.totalMonthlyExpenses}
@@ -111,6 +121,12 @@ export default function DashboardPage() {
         open={showOnboarding}
         onComplete={handleOnboardingComplete}
       />
+
+      {/* Trial Expired Modal */}
+      {subscription && (
+        <TrialExpiredModal open={subscription.status === 'expired'} />
+      )}
+
       <MobileNav />
     </div>
   );

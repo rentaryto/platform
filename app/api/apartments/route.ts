@@ -2,6 +2,7 @@ import { requireAuth } from '@/lib/api-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { isValidAmount, sanitizeString } from '@/lib/validation'
+import { canAddProperty, isTrialExpired } from '@/lib/subscription-utils'
 
 export async function GET(request: NextRequest) {
   const user = await requireAuth(request)
@@ -53,6 +54,48 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Precio de compra inválido' },
         { status: 400 }
+      )
+    }
+
+    // Check subscription limits
+    const subscription = await prisma.subscription.findUnique({
+      where: { userId: user.id },
+    })
+
+    if (!subscription) {
+      return NextResponse.json(
+        { error: 'No tienes una suscripción activa' },
+        { status: 403 }
+      )
+    }
+
+    // Update status if trial expired
+    let currentSubscription = subscription
+    if (isTrialExpired(subscription) && subscription.status === 'trial') {
+      currentSubscription = await prisma.subscription.update({
+        where: { id: subscription.id },
+        data: { status: 'expired' },
+      })
+    }
+
+    // Check if subscription is active or in trial
+    if (currentSubscription.status === 'expired' || currentSubscription.status === 'cancelled') {
+      return NextResponse.json(
+        { error: 'Tu período de prueba ha terminado. Contacta con nosotros para activar tu plan.' },
+        { status: 403 }
+      )
+    }
+
+    // Count current properties
+    const currentCount = await prisma.apartment.count({
+      where: { userId: user.id },
+    })
+
+    // Check property limit
+    if (!canAddProperty(currentSubscription, currentCount)) {
+      return NextResponse.json(
+        { error: `Has alcanzado el límite de ${currentSubscription.maxProperties} inmuebles. Contacta con nosotros para ampliar tu plan: info@rentaryto.com` },
+        { status: 403 }
       )
     }
 

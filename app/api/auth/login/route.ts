@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { isValidEmail } from '@/lib/validation'
+import { calculateTrialEndDate } from '@/lib/subscription-utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,12 +51,24 @@ export async function POST(request: NextRequest) {
 
     // If user doesn't exist in DB (confirmed email after signup), create it
     if (!user) {
+      const trialStartDate = new Date()
+      const trialEndDate = calculateTrialEndDate(trialStartDate)
+
       user = await prisma.user.create({
         data: {
           id: authData.user.id,
           email: authData.user.email!,
           password: '',
           name: authData.user.user_metadata?.name || authData.user.email?.split('@')[0] || 'Usuario',
+          subscription: {
+            create: {
+              status: 'trial',
+              plan: 'standard',
+              maxProperties: 5,
+              trialStartDate,
+              trialEndDate,
+            },
+          },
         },
         select: {
           id: true,
@@ -63,6 +76,8 @@ export async function POST(request: NextRequest) {
           name: true,
         },
       })
+
+      console.log('[LOGIN] Created new user with trial subscription:', user.id)
     }
 
     return NextResponse.json({ user })
