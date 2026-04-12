@@ -143,28 +143,28 @@ export async function POST(
       },
     })
 
-    // If sendNow is true and type is invoice, send email immediately
+    // If sendNow is true and type is invoice, send email in background
     if (type === 'invoice' && sendNow) {
-      console.log('[UPLOAD DOCUMENT] sendNow=true, attempting to send email for document:', document.id)
+      console.log('[UPLOAD DOCUMENT] sendNow=true, sending email in background for document:', document.id)
 
-      try {
-        await sendDocumentEmail({
-          documentId: document.id,
-          userId: user.id,
+      // Fire and forget - don't wait for email to send
+      // This allows the user to get immediate feedback without waiting for Resend API
+      sendDocumentEmail({
+        documentId: document.id,
+        userId: user.id,
+      })
+        .then(() => {
+          console.log('[UPLOAD DOCUMENT] Email sent successfully in background')
+        })
+        .catch((emailError) => {
+          console.error('[UPLOAD DOCUMENT] Error sending email in background:', emailError)
+          // Email failed but document is already created with status 'pending'
+          // User can retry sending manually
         })
 
-        console.log('[UPLOAD DOCUMENT] Email sent successfully on upload')
-
-        // Refresh the document to get the updated status
-        const updatedDoc = await prisma.document.findUnique({
-          where: { id: document.id }
-        })
-        return NextResponse.json(updatedDoc || document, { status: 201 })
-      } catch (emailError) {
-        console.error('[UPLOAD DOCUMENT] Error sending email:', emailError)
-        // Email failed, but document was created with status 'pending'
-        // Return the document with 'pending' status so user can retry
-      }
+      // Return immediately - document shows as 'pending'
+      // Frontend will refresh and see 'sent' status once background process completes
+      console.log('[UPLOAD DOCUMENT] Returning immediately, email sending in background')
     }
 
     return NextResponse.json(document, { status: 201 })
