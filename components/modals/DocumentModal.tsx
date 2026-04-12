@@ -11,12 +11,11 @@ import { documentsApi } from "@/lib/api";
 
 interface Props {
   apartmentId: string;
-  hasTenant: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Props) {
+export function DocumentModal({ apartmentId, open, onOpenChange }: Props) {
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [type, setType] = useState("invoice");
@@ -24,7 +23,6 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [sendNow, setSendNow] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -48,9 +46,6 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
       if (startDate) formData.append("startDate", startDate);
       if (endDate) formData.append("endDate", endDate);
       formData.append("file", file);
-      if (type === "invoice") {
-        formData.append("sendNow", String(sendNow));
-      }
       await documentsApi.upload(apartmentId, formData);
       await queryClient.invalidateQueries({ queryKey: ["apartment", apartmentId] });
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
@@ -59,7 +54,6 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
       setDescription("");
       setStartDate("");
       setEndDate("");
-      setSendNow(false);
       if (fileRef.current) fileRef.current.value = "";
       onOpenChange(false);
     } catch (err) {
@@ -134,17 +128,6 @@ export function DocumentModal({ apartmentId, hasTenant, open, onOpenChange }: Pr
             <Label>Archivo</Label>
             <Input type="file" ref={fileRef} />
           </div>
-          {type === "invoice" && hasTenant && (
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
-              <input
-                type="checkbox"
-                checked={sendNow}
-                onChange={(e) => setSendNow(e.target.checked)}
-                className="h-4 w-4"
-              />
-              ¿Enviar ahora al inquilino?
-            </label>
-          )}
           {error && <p className="text-sm text-red-500">{error}</p>}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

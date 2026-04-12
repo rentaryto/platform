@@ -729,7 +729,6 @@ export default function ApartmentDetailPage() {
             />
             <DocumentModal
               apartmentId={id}
-              hasTenant={!!apartment.currentTenant}
               open={documentOpen}
               onOpenChange={setDocumentOpen}
             />

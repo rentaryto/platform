@@ -83,7 +83,6 @@ export async function sendDocumentEmail({ documentId, userId }: SendDocumentEmai
   const tenantFirstName = escapeHtml(getFirstName(tenant.name))
   const userFirstName = escapeHtml(getFirstName(userData.name))
   const apartmentNameSafe = escapeHtml(document.apartment.name)
-  const descriptionSafe = document.description ? escapeHtml(document.description) : null
 
   const typeLabel =
     document.type === 'invoice' ? 'Factura' :
@@ -139,14 +138,6 @@ export async function sendDocumentEmail({ documentId, userId }: SendDocumentEmai
             Te comparto ${document.type === 'invoice' ? 'la factura' : document.type === 'contract' || document.type === 'contract_extension' ? 'el contrato' : 'un documento'} de <strong>${apartmentNameSafe}</strong>.
           </p>
         </div>
-
-        ${descriptionSafe ? `
-        <div style="margin-bottom: 32px; padding: 16px; background-color: #f9fafb; border-left: 3px solid #3b82f6; border-radius: 4px;">
-          <p style="margin: 0; font-size: 15px; color: #374151;">
-            ${descriptionSafe}
-          </p>
-        </div>
-        ` : ''}
 
         <div style="margin: 32px 0; text-align: center;">
           <a href="${urlData.signedUrl}"

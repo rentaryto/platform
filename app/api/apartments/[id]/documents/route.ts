@@ -2,7 +2,6 @@ import { requireAuth } from '@/lib/api-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createClient } from '@/lib/supabase-server'
-import { sendDocumentEmail } from '@/lib/email-service'
 
 export async function GET(
   request: NextRequest,
@@ -67,7 +66,6 @@ export async function POST(
     const description = formData.get('description') as string | null
     const startDate = formData.get('startDate') as string | null
     const endDate = formData.get('endDate') as string | null
-    const sendNow = formData.get('sendNow') === 'true'
 
     if (!file || !type) {
       return NextResponse.json(
@@ -142,30 +140,6 @@ export async function POST(
         paidStatus,
       },
     })
-
-    // If sendNow is true and type is invoice, send email in background
-    if (type === 'invoice' && sendNow) {
-      console.log('[UPLOAD DOCUMENT] sendNow=true, sending email in background for document:', document.id)
-
-      // Fire and forget - don't wait for email to send
-      // This allows the user to get immediate feedback without waiting for Resend API
-      sendDocumentEmail({
-        documentId: document.id,
-        userId: user.id,
-      })
-        .then(() => {
-          console.log('[UPLOAD DOCUMENT] Email sent successfully in background')
-        })
-        .catch((emailError) => {
-          console.error('[UPLOAD DOCUMENT] Error sending email in background:', emailError)
-          // Email failed but document is already created with status 'pending'
-          // User can retry sending manually
-        })
-
-      // Return immediately - document shows as 'pending'
-      // Frontend will refresh and see 'sent' status once background process completes
-      console.log('[UPLOAD DOCUMENT] Returning immediately, email sending in background')
-    }
 
     return NextResponse.json(document, { status: 201 })
   } catch (error) {
