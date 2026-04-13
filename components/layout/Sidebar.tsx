@@ -3,13 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { LayoutDashboard, Users, Home, FileText, LogOut, Clock, Building2, Sparkles, TrendingUp, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getUser, logout } from "@/lib/auth";
+import { getUser, logout, isAuthenticated } from "@/lib/auth";
+import { subscriptionApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { PricingModal } from "@/components/modals/PricingModal";
-import type { SubscriptionStatus } from "@/lib/types";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -19,15 +20,19 @@ const navItems = [
   { href: "/dashboard/settings", label: "Configuración", icon: Settings },
 ];
 
-interface SidebarProps {
-  subscription?: SubscriptionStatus | null;
-}
-
-export function Sidebar({ subscription }: SidebarProps) {
+export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const user = getUser();
   const [pricingModalOpen, setPricingModalOpen] = useState(false);
+
+  // Cargar subscription internamente
+  const { data: subscription } = useQuery({
+    queryKey: ["subscription"],
+    queryFn: subscriptionApi.get,
+    enabled: isAuthenticated(),
+    retry: 1,
+  });
 
   const handleLogout = async () => {
     await logout();
