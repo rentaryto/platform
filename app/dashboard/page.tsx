@@ -14,8 +14,6 @@ import { UpcomingReminders } from "@/components/dashboard/UpcomingReminders";
 import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
 import { InstallAppBanner } from "@/components/dashboard/InstallAppBanner";
 import { TrialExpiredModal } from "@/components/dashboard/TrialExpiredModal";
-import { TrialBanner } from "@/components/dashboard/TrialBanner";
-import { UpgradeBanner } from "@/components/dashboard/UpgradeBanner";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -116,13 +114,6 @@ export default function DashboardPage() {
           {data && (
             <>
               <InstallAppBanner />
-
-              {subscription && (
-                <>
-                  <TrialBanner subscription={subscription} />
-                  <UpgradeBanner subscription={subscription} />
-                </>
-              )}
 
               <StatsCards
                 totalMonthlyIncome={data.totalMonthlyIncome}

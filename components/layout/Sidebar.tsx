@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, Home, FileText, LogOut, Clock, Building2 } from "lucide-react";
+import { LayoutDashboard, Users, Home, FileText, LogOut, Clock, Building2, Sparkles, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getUser, logout } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
+import { PricingModal } from "@/components/modals/PricingModal";
 import type { SubscriptionStatus } from "@/lib/types";
 
 const navItems = [
@@ -24,6 +26,7 @@ export function Sidebar({ subscription }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const user = getUser();
+  const [pricingModalOpen, setPricingModalOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -65,10 +68,10 @@ export function Sidebar({ subscription }: SidebarProps) {
 
       {/* User + Logout */}
       <div className="p-4 border-t border-gray-700">
-        {/* Trial info - discreto */}
+        {/* Trial info */}
         {subscription && subscription.status === 'trial' && (
-          <div className="mb-3 px-3 py-2 bg-gray-800 rounded-lg">
-            <div className="flex items-center gap-2 mb-1">
+          <div className="mb-3 px-3 py-2 bg-gray-800 rounded-lg space-y-2">
+            <div className="flex items-center gap-2">
               <Clock className="h-3 w-3 text-blue-400" />
               <p className="text-xs text-gray-300 font-medium">
                 {subscription.daysRemaining} días restantes
@@ -78,6 +81,32 @@ export function Sidebar({ subscription }: SidebarProps) {
               <Building2 className="h-3 w-3" />
               <span>{subscription.currentProperties} / {subscription.maxProperties} inmuebles</span>
             </div>
+            <Button
+              size="sm"
+              onClick={() => setPricingModalOpen(true)}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-xs h-7"
+            >
+              <Sparkles className="h-3 w-3 mr-1" />
+              Actualizar plan
+            </Button>
+          </div>
+        )}
+
+        {/* Plan básico activo info */}
+        {subscription && subscription.status === 'active' && subscription.plan === 'basic' && (
+          <div className="mb-3 px-3 py-2 bg-gray-800 rounded-lg space-y-2">
+            <div className="flex items-center gap-2 text-xs text-gray-400">
+              <Building2 className="h-3 w-3" />
+              <span>{subscription.currentProperties} / {subscription.maxProperties} inmuebles</span>
+            </div>
+            <Button
+              size="sm"
+              onClick={() => setPricingModalOpen(true)}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-xs h-7"
+            >
+              <TrendingUp className="h-3 w-3 mr-1" />
+              Mejorar plan
+            </Button>
           </div>
         )}
 
@@ -97,6 +126,13 @@ export function Sidebar({ subscription }: SidebarProps) {
           Cerrar sesión
         </Button>
       </div>
+
+      {/* Pricing Modal */}
+      <PricingModal
+        open={pricingModalOpen}
+        onOpenChange={setPricingModalOpen}
+        currentPlan={subscription?.plan}
+      />
     </aside>
   );
 }
