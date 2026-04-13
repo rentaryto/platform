@@ -19,9 +19,10 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   currentPlan?: PlanType; // Plan actual del usuario (opcional)
+  isTrialUser?: boolean; // Indica si el usuario está en trial
 }
 
-export function PricingModal({ open, onOpenChange, currentPlan }: Props) {
+export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = false }: Props) {
   const [contactModalOpen, setContactModalOpen] = useState(false);
 
   // Determinar qué planes mostrar
@@ -29,9 +30,13 @@ export function PricingModal({ open, onOpenChange, currentPlan }: Props) {
   const currentPlanIndex = currentPlan ? planHierarchy.indexOf(currentPlan) : -1;
 
   const shouldShowPlan = (planId: PlanType): boolean => {
-    if (!currentPlan) return true; // Mostrar todos si no hay plan actual
+    // Si el usuario está en trial, mostrar todos los planes
+    if (isTrialUser) return true;
+    // Si no hay plan actual, mostrar todos los planes
+    if (!currentPlan) return true;
+    // Si tiene un plan activo, solo mostrar planes superiores
     const planIndex = planHierarchy.indexOf(planId);
-    return planIndex > currentPlanIndex; // Solo mostrar planes superiores
+    return planIndex > currentPlanIndex;
   };
 
   const handleActivatePlan = (planPrice: number) => {
@@ -67,8 +72,7 @@ export function PricingModal({ open, onOpenChange, currentPlan }: Props) {
                     <span className="text-3xl font-bold text-gray-900">{SUBSCRIPTION_PLANS.basic.price}€</span>
                     <span className="text-gray-600">/mes</span>
                   </div>
-                  <p className="text-xs text-gray-600 mb-1">Hasta {SUBSCRIPTION_PLANS.basic.maxProperties} inmuebles</p>
-                  <p className="text-xs text-gray-500">~0,97€ por piso</p>
+                  <p className="text-xs text-gray-600">Hasta {SUBSCRIPTION_PLANS.basic.maxProperties} inmuebles</p>
                 </div>
 
                 <div className="space-y-2 mb-6">
@@ -105,8 +109,7 @@ export function PricingModal({ open, onOpenChange, currentPlan }: Props) {
                     <span className="text-3xl font-bold text-gray-900">{SUBSCRIPTION_PLANS.professional.price}€</span>
                     <span className="text-gray-600">/mes</span>
                   </div>
-                  <p className="text-xs text-gray-600 mb-1">Hasta {SUBSCRIPTION_PLANS.professional.maxProperties} inmuebles</p>
-                  <p className="text-xs text-gray-500">~0,69€ por piso</p>
+                  <p className="text-xs text-gray-600">Hasta {SUBSCRIPTION_PLANS.professional.maxProperties} inmuebles</p>
                 </div>
 
                 <div className="space-y-2 mb-6">

@@ -64,7 +64,12 @@ export function TrialBanner({ subscription }: Props) {
         </CardContent>
       </Card>
 
-      <PricingModal open={pricingModalOpen} onOpenChange={setPricingModalOpen} />
+      <PricingModal
+        open={pricingModalOpen}
+        onOpenChange={setPricingModalOpen}
+        currentPlan={subscription.plan}
+        isTrialUser={true}
+      />
     </>
   );
 }

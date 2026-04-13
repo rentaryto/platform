@@ -138,6 +138,7 @@ export function Sidebar() {
         open={pricingModalOpen}
         onOpenChange={setPricingModalOpen}
         currentPlan={subscription?.plan}
+        isTrialUser={subscription?.status === 'trial'}
       />
     </aside>
   );

@@ -67,6 +67,7 @@ export function UpgradeBanner({ subscription }: Props) {
         open={pricingModalOpen}
         onOpenChange={setPricingModalOpen}
         currentPlan={subscription.plan}
+        isTrialUser={false}
       />
     </>
   );
