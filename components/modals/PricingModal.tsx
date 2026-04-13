@@ -13,14 +13,26 @@ import { Button } from "@/components/ui/button";
 import { Check, Mail, Sparkles } from "lucide-react";
 import { SUBSCRIPTION_PLANS } from "@/lib/subscription-plans";
 import { ContactModal } from "@/components/modals/ContactModal";
+import type { PlanType } from "@/lib/types";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  currentPlan?: PlanType; // Plan actual del usuario (opcional)
 }
 
-export function PricingModal({ open, onOpenChange }: Props) {
+export function PricingModal({ open, onOpenChange, currentPlan }: Props) {
   const [contactModalOpen, setContactModalOpen] = useState(false);
+
+  // Determinar qué planes mostrar
+  const planHierarchy: PlanType[] = ["basic", "professional", "enterprise"];
+  const currentPlanIndex = currentPlan ? planHierarchy.indexOf(currentPlan) : -1;
+
+  const shouldShowPlan = (planId: PlanType): boolean => {
+    if (!currentPlan) return true; // Mostrar todos si no hay plan actual
+    const planIndex = planHierarchy.indexOf(planId);
+    return planIndex > currentPlanIndex; // Solo mostrar planes superiores
+  };
 
   const handleActivatePlan = (planPrice: number) => {
     const subject = "Activar plan de Rentaryto";
@@ -44,8 +56,9 @@ export function PricingModal({ open, onOpenChange }: Props) {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid md:grid-cols-3 gap-4 my-6">
+          <div className={`grid gap-4 my-6 ${currentPlan ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
             {/* Plan Básico */}
+            {shouldShowPlan("basic") && (
             <Card className="border-2 border-gray-200 hover:border-blue-300 transition-colors">
               <CardContent className="pt-6 pb-6">
                 <div className="text-center mb-4">
@@ -75,8 +88,10 @@ export function PricingModal({ open, onOpenChange }: Props) {
                 </Button>
               </CardContent>
             </Card>
+            )}
 
             {/* Plan Profesional */}
+            {shouldShowPlan("professional") && (
             <Card className="border-2 border-blue-500 hover:border-blue-600 transition-colors relative">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
@@ -111,8 +126,10 @@ export function PricingModal({ open, onOpenChange }: Props) {
                 </Button>
               </CardContent>
             </Card>
+            )}
 
             {/* Plan Empresarial */}
+            {shouldShowPlan("enterprise") && (
             <Card className="border-2 border-gray-200 hover:border-blue-300 transition-colors">
               <CardContent className="pt-6 pb-6">
                 <div className="text-center mb-4">
@@ -143,6 +160,7 @@ export function PricingModal({ open, onOpenChange }: Props) {
                 </Button>
               </CardContent>
             </Card>
+            )}
           </div>
 
           <p className="text-xs text-center text-gray-500">

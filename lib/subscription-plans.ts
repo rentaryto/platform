@@ -88,4 +88,4 @@ export function canPlanSupportProperties(planId: PlanType, propertyCount: number
  */
 export const TRIAL_DURATION_MONTHS = 3;
 export const DEFAULT_TRIAL_PLAN: PlanType = "basic";
-export const TRIAL_MAX_PROPERTIES = 10; // Permitir hasta 10 inmuebles durante el trial para probar todas las funcionalidades
+export const TRIAL_MAX_PROPERTIES = 3; // Trial tiene el mismo límite que plan básico
