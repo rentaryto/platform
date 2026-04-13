@@ -117,7 +117,7 @@ model Subscription {
   user                 User      @relation(fields: [userId], references: [id])
   status               String    @default("trial") // trial, active, cancelled, expired
   plan                 String    @default("basic") // basic (2.90€), professional (6.90€), enterprise (personalizado)
-  maxProperties        Int       @default(3)
+  maxProperties        Int       @default(10) // Durante trial: 10 inmuebles para probar
   trialStartDate       DateTime  @default(now())
   trialEndDate         DateTime
   currentPeriodStart   DateTime?
