@@ -118,8 +118,8 @@ export default function LandingPage() {
             <CardContent className="pt-12 pb-8">
               <div className="text-center mb-6">
                 <div className="flex items-baseline justify-center gap-2 mb-2">
-                  <span className="text-5xl font-bold text-gray-900">4,9€</span>
-                  <span className="text-gray-600">4.9/mes + iva</span>
+                  <span className="text-5xl font-bold text-gray-900">4,90€</span>
+                  <span className="text-gray-600">/mes + iva</span>
                 </div>
                 <p className="text-sm text-gray-600">Hasta 5 inmuebles</p>
               </div>
