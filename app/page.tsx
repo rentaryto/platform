@@ -118,8 +118,8 @@ export default function LandingPage() {
             <CardContent className="pt-12 pb-8">
               <div className="text-center mb-6">
                 <div className="flex items-baseline justify-center gap-2 mb-2">
-                  <span className="text-5xl font-bold text-gray-900">9€</span>
-                  <span className="text-gray-600">/mes</span>
+                  <span className="text-5xl font-bold text-gray-900">4,9€</span>
+                  <span className="text-gray-600">4.9/mes + iva</span>
                 </div>
                 <p className="text-sm text-gray-600">Hasta 5 inmuebles</p>
               </div>
@@ -143,7 +143,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">Envío a inquilinos</span>
+                  <span className="text-gray-700">Envío de documentos a inquilinos</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
