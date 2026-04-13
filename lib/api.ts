@@ -260,4 +260,25 @@ export const subscriptionApi = {
   get() {
     return apiFetch<SubscriptionStatus>("/subscription");
   },
+  cancel() {
+    return apiFetch<{ success: boolean; message: string }>("/subscription/cancel", {
+      method: "POST",
+    });
+  },
+};
+
+// ─── User ────────────────────────────────────────────────────────────────────
+export const userApi = {
+  updateProfile(data: { name?: string; email?: string }) {
+    return apiFetch<{ user: User }>("/user/profile", {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  },
+  changePassword(data: { currentPassword: string; newPassword: string }) {
+    return apiFetch<{ success: boolean; message: string }>("/user/password", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
 };

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, Home, FileText, LogOut, Clock, Building2, Sparkles, TrendingUp } from "lucide-react";
+import { LayoutDashboard, Users, Home, FileText, LogOut, Clock, Building2, Sparkles, TrendingUp, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getUser, logout } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ const navItems = [
   { href: "/dashboard/properties", label: "Inmuebles", icon: Home },
   { href: "/dashboard/tenants", label: "Inquilinos", icon: Users },
   { href: "/dashboard/hacienda", label: "Hacienda", icon: FileText },
+  { href: "/dashboard/settings", label: "Configuración", icon: Settings },
 ];
 
 interface SidebarProps {

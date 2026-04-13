@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, Home, FileText, UserCircle, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Home, FileText, UserCircle, LogOut, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getUser, logout } from "@/lib/auth";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -14,6 +14,7 @@ const navItems = [
   { href: "/dashboard/properties", label: "Inmuebles", icon: Home },
   { href: "/dashboard/tenants", label: "Inquilinos", icon: Users },
   { href: "/dashboard/hacienda", label: "Hacienda", icon: FileText },
+  { href: "/dashboard/settings", label: "Config", icon: Settings },
 ];
 
 export function MobileNav() {
