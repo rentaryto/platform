@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Building2 } from "lucide-react";
+import { Building2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 const loginSchema = z.object({
@@ -74,6 +74,15 @@ function LoginForm() {
           </div>
           <CardTitle className="text-2xl font-bold">Rentaryto</CardTitle>
           <CardDescription>Gestión de alquileres</CardDescription>
+          <div className="pt-2">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 hover:underline"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Volver a inicio
+            </Link>
+          </div>
         </CardHeader>
         <CardContent>
           {confirmed && (

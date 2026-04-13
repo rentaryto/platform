@@ -26,6 +26,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    if (!authUser.email) {
+      return NextResponse.json(
+        { error: 'Usuario sin email registrado' },
+        { status: 400 }
+      )
+    }
+
     const supabase = await createClient()
 
     // Verificar contraseña actual intentando hacer login
