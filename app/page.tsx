@@ -1,9 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building2, Euro, FileText, BarChart3, CheckCircle, Check } from "lucide-react";
+import { Building2, Euro, FileText, BarChart3, CheckCircle, Check, Mail } from "lucide-react";
+import { ContactModal } from "@/components/modals/ContactModal";
 
 export default function LandingPage() {
+  const [contactModalOpen, setContactModalOpen] = useState(false);
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
@@ -100,79 +105,162 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section className="max-w-4xl mx-auto px-4 py-16">
+      <section className="max-w-6xl mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
           Precio simple y transparente
         </h2>
         <p className="text-center text-gray-600 mb-12">
-          Un único plan con todo lo que necesitas
+          Elige el plan que mejor se adapte a tus necesidades
         </p>
 
-        <div className="max-w-md mx-auto">
-          <Card className="border-2 border-blue-500 relative">
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <span className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                3 meses gratis
-              </span>
-            </div>
-            <CardContent className="pt-12 pb-8">
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {/* Plan Básico */}
+          <Card className="border-2 border-gray-200 relative hover:shadow-lg transition-shadow">
+            <CardContent className="pt-8 pb-8">
               <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Básico</h3>
                 <div className="flex items-baseline justify-center gap-2 mb-2">
-                  <span className="text-5xl font-bold text-gray-900">4,90€</span>
-                  <span className="text-gray-600">/mes + iva</span>
+                  <span className="text-4xl font-bold text-gray-900">2,90€</span>
+                  <span className="text-gray-600">/mes</span>
                 </div>
-                <p className="text-sm text-gray-600">Hasta 5 inmuebles</p>
+                <p className="text-sm text-gray-600 mb-1">Hasta 3 inmuebles</p>
+                <p className="text-xs text-gray-500">~0,97€ por piso</p>
               </div>
 
               <div className="space-y-3 mb-8">
                 <div className="flex items-start gap-3">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">Gestión de inmuebles</span>
+                  <span className="text-sm text-gray-700">Gestión de inmuebles</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">Gestión de inquilinos</span>
+                  <span className="text-sm text-gray-700">Gestión de inquilinos</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">Control de gastos</span>
+                  <span className="text-sm text-gray-700">Control de gastos</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">Contratos y facturas</span>
+                  <span className="text-sm text-gray-700">Contratos y facturas</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">Envío de documentos a inquilinos</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">Recordatorios</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700">Documentación para Hacienda</span>
+                  <span className="text-sm text-gray-700">Recordatorios</span>
                 </div>
               </div>
 
               <Link href="/signup">
-                <Button className="w-full text-lg py-6 mb-4">
+                <Button className="w-full">
                   Empezar gratis
                 </Button>
               </Link>
+            </CardContent>
+          </Card>
 
-              <p className="text-center text-sm text-gray-600">
-                ¿Necesitas más de 5 inmuebles?{" "}
-                <a
-                  href="mailto:info@rentaryto.com"
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  Contacta con nosotros
-                </a>
-              </p>
+          {/* Plan Profesional */}
+          <Card className="border-2 border-blue-500 relative hover:shadow-lg transition-shadow">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                Más popular
+              </span>
+            </div>
+            <CardContent className="pt-8 pb-8">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Profesional</h3>
+                <div className="flex items-baseline justify-center gap-2 mb-2">
+                  <span className="text-4xl font-bold text-gray-900">6,90€</span>
+                  <span className="text-gray-600">/mes</span>
+                </div>
+                <p className="text-sm text-gray-600 mb-1">Hasta 10 inmuebles</p>
+                <p className="text-xs text-gray-500">~0,69€ por piso</p>
+              </div>
+
+              <div className="space-y-3 mb-8">
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Gestión de inmuebles</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Gestión de inquilinos</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Control de gastos</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Contratos y facturas</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Envío de documentos</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Recordatorios</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Informes para Hacienda</span>
+                </div>
+              </div>
+
+              <Link href="/signup">
+                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                  Empezar gratis
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Plan Empresarial */}
+          <Card className="border-2 border-gray-200 relative hover:shadow-lg transition-shadow">
+            <CardContent className="pt-8 pb-8">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Empresarial</h3>
+                <div className="flex items-baseline justify-center gap-2 mb-2">
+                  <span className="text-2xl font-bold text-gray-900">Personalizado</span>
+                </div>
+                <p className="text-sm text-gray-600 mb-1">Más de 10 inmuebles</p>
+                <p className="text-xs text-gray-500">Precio a medida</p>
+              </div>
+
+              <div className="space-y-3 mb-8">
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Todo lo incluido</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Sin límite de inmuebles</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Soporte prioritario</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-700">Funcionalidades a medida</span>
+                </div>
+              </div>
+
+              <Button
+                className="w-full"
+                variant="outline"
+                onClick={() => setContactModalOpen(true)}
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Contacta con nosotros
+              </Button>
             </CardContent>
           </Card>
         </div>
+
+        <p className="text-center text-sm text-gray-600 mt-8">
+          Todos los planes incluyen 3 meses gratis de prueba
+        </p>
       </section>
 
       {/* CTA */}
@@ -200,6 +288,8 @@ export default function LandingPage() {
           <p>© 2026 Rentaryto. Gestión de alquileres simplificada. Contacto: info@rentaryto.com</p>
         </div>
       </footer>
+
+      <ContactModal open={contactModalOpen} onOpenChange={setContactModalOpen} />
     </div>
   );
 }
