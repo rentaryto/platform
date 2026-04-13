@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { documentsApi } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
-import { FileText, Send, CheckCircle } from "lucide-react";
+import { FileText, Send, DollarSign } from "lucide-react";
 
 interface PendingInvoice {
   id: string;
@@ -91,9 +91,9 @@ export function PendingInvoices({ invoices }: { invoices: PendingInvoice[] }) {
                     )}
                     {invoice.sendStatus === 'pending' && (
                       <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-6 w-6 p-0 text-orange-700 hover:bg-orange-100"
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 sm:h-7 sm:w-7"
                         onClick={() => handleSend(invoice.id)}
                         disabled={sending === invoice.id}
                         title="Enviar factura"
@@ -102,14 +102,14 @@ export function PendingInvoices({ invoices }: { invoices: PendingInvoice[] }) {
                       </Button>
                     )}
                     <Button
-                      size="sm"
-                      variant="ghost"
-                      className={`h-6 w-6 p-0 ${invoice.paidStatus === 'paid' ? 'text-green-700 hover:bg-green-100' : 'text-gray-500 hover:bg-gray-100'}`}
+                      variant="outline"
+                      size="icon"
+                      className={`h-8 w-8 sm:h-7 sm:w-7 ${invoice.paidStatus === 'paid' ? 'text-gray-400' : 'text-green-600'}`}
                       onClick={() => handleMarkAsPaid(invoice.id, invoice.paidStatus)}
                       disabled={marking === invoice.id}
                       title={invoice.paidStatus === 'paid' ? 'Marcar como no pagada' : 'Marcar como pagada'}
                     >
-                      <CheckCircle className={`h-3 w-3 ${invoice.paidStatus === 'paid' ? 'fill-current' : ''}`} />
+                      <DollarSign className={`h-3 w-3 ${invoice.paidStatus === 'paid' ? 'fill-current' : ''}`} />
                     </Button>
                   </div>
                 </div>
