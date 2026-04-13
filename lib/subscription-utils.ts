@@ -1,11 +1,12 @@
-import type { Subscription } from './types'
+import type { Subscription, PlanType } from './types'
+import { getPlanById, TRIAL_DURATION_MONTHS } from './subscription-plans'
 
 /**
  * Calcula la fecha de fin del trial (3 meses desde la fecha de inicio)
  */
 export function calculateTrialEndDate(startDate: Date): Date {
   const endDate = new Date(startDate)
-  endDate.setMonth(endDate.getMonth() + 3)
+  endDate.setMonth(endDate.getMonth() + TRIAL_DURATION_MONTHS)
   return endDate
 }
 
@@ -55,6 +56,7 @@ export function getSubscriptionStatus(
   maxProperties: number
   currentProperties: number
   canAddMore: boolean
+  plan: PlanType
 } {
   const daysRemaining = subscription.status === 'trial'
     ? calculateDaysRemaining(subscription.trialEndDate)
@@ -68,5 +70,13 @@ export function getSubscriptionStatus(
     maxProperties: subscription.maxProperties,
     currentProperties,
     canAddMore,
+    plan: subscription.plan,
   }
+}
+
+/**
+ * Obtiene la información del plan actual
+ */
+export function getPlanInfo(subscription: Subscription) {
+  return getPlanById(subscription.plan)
 }

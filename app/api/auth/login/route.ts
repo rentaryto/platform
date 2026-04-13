@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { isValidEmail } from '@/lib/validation'
 import { calculateTrialEndDate } from '@/lib/subscription-utils'
+import { DEFAULT_TRIAL_PLAN, getPlanById } from '@/lib/subscription-plans'
 
 export async function POST(request: NextRequest) {
   try {
@@ -53,6 +54,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       const trialStartDate = new Date()
       const trialEndDate = calculateTrialEndDate(trialStartDate)
+      const defaultPlan = getPlanById(DEFAULT_TRIAL_PLAN)
 
       user = await prisma.user.create({
         data: {
@@ -63,8 +65,8 @@ export async function POST(request: NextRequest) {
           subscription: {
             create: {
               status: 'trial',
-              plan: 'standard',
-              maxProperties: 5,
+              plan: DEFAULT_TRIAL_PLAN,
+              maxProperties: defaultPlan.maxProperties,
               trialStartDate,
               trialEndDate,
             },
@@ -77,7 +79,7 @@ export async function POST(request: NextRequest) {
         },
       })
 
-      console.log('[LOGIN] Created new user with trial subscription:', user.id)
+      console.log('[LOGIN] Created new user with trial subscription:', user.id, 'plan:', DEFAULT_TRIAL_PLAN)
     }
 
     return NextResponse.json({ user })

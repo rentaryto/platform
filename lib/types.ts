@@ -6,11 +6,13 @@ export interface User {
 
 // Domain types
 
+export type PlanType = "basic" | "professional" | "enterprise";
+
 export interface Subscription {
   id: string;
   userId: string;
   status: "trial" | "active" | "cancelled" | "expired";
-  plan: string;
+  plan: PlanType;
   maxProperties: number;
   trialStartDate: Date;
   trialEndDate: Date;
@@ -30,6 +32,7 @@ export interface SubscriptionStatus {
   maxProperties: number;
   currentProperties: number;
   canAddMore: boolean;
+  plan: PlanType;
 }
 
 export interface Tenant {
