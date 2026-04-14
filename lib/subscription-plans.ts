@@ -55,6 +55,8 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     features: [
       "Todo lo incluido",
       "Sin límite de inmuebles",
+      "Soporte prioritario",
+      "Funcionalidades a medida",
     ],
   },
 };

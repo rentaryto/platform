@@ -48,7 +48,7 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
               <div className="bg-blue-100 p-2 rounded-lg">
@@ -61,23 +61,23 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6 my-6">
+          <div className="space-y-4 my-4">
             {/* Planes Básico y Profesional - Grid de 2 columnas en desktop */}
             <div className="grid gap-4 md:grid-cols-2">
               {/* Plan Básico */}
               {shouldShowPlan("basic") && (
                 <Card className="border-2 border-gray-200 hover:border-blue-300 transition-colors">
-                  <CardContent className="pt-6 pb-6">
-                    <div className="text-center mb-4">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">{SUBSCRIPTION_PLANS.basic.name}</h3>
-                      <div className="flex items-baseline justify-center gap-1 mb-2">
-                        <span className="text-3xl font-bold text-gray-900">{SUBSCRIPTION_PLANS.basic.price}€</span>
+                  <CardContent className="pt-5 pb-5">
+                    <div className="text-center mb-3">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">{SUBSCRIPTION_PLANS.basic.name}</h3>
+                      <div className="flex items-baseline justify-center gap-1 mb-1">
+                        <span className="text-2xl font-bold text-gray-900">{SUBSCRIPTION_PLANS.basic.price}€</span>
                         <span className="text-gray-600 text-sm">/mes</span>
                       </div>
                       <p className="text-sm text-gray-600">Hasta {SUBSCRIPTION_PLANS.basic.maxProperties} inmuebles</p>
                     </div>
 
-                    <div className="space-y-2 mb-6">
+                    <div className="space-y-1.5 mb-4">
                       {SUBSCRIPTION_PLANS.basic.features.map((feature, idx) => (
                         <div key={idx} className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
@@ -104,17 +104,17 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
                       Más popular
                     </span>
                   </div>
-                  <CardContent className="pt-6 pb-6">
-                    <div className="text-center mb-4">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">{SUBSCRIPTION_PLANS.professional.name}</h3>
-                      <div className="flex items-baseline justify-center gap-1 mb-2">
-                        <span className="text-3xl font-bold text-gray-900">{SUBSCRIPTION_PLANS.professional.price}€</span>
+                  <CardContent className="pt-5 pb-5">
+                    <div className="text-center mb-3">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">{SUBSCRIPTION_PLANS.professional.name}</h3>
+                      <div className="flex items-baseline justify-center gap-1 mb-1">
+                        <span className="text-2xl font-bold text-gray-900">{SUBSCRIPTION_PLANS.professional.price}€</span>
                         <span className="text-gray-600 text-sm">/mes</span>
                       </div>
                       <p className="text-sm text-gray-600">Hasta {SUBSCRIPTION_PLANS.professional.maxProperties} inmuebles</p>
                     </div>
 
-                    <div className="space-y-2 mb-6">
+                    <div className="space-y-1.5 mb-4">
                       {SUBSCRIPTION_PLANS.professional.features.map((feature, idx) => (
                         <div key={idx} className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
@@ -138,17 +138,17 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
             {shouldShowPlan("enterprise") && (
               <div className="flex justify-center">
                 <Card className="border-2 border-gray-200 hover:border-blue-300 transition-colors w-full md:max-w-md">
-                  <CardContent className="pt-6 pb-6">
-                    <div className="text-center mb-4">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">{SUBSCRIPTION_PLANS.enterprise.name}</h3>
-                      <div className="flex items-baseline justify-center gap-1 mb-2">
+                  <CardContent className="pt-5 pb-5">
+                    <div className="text-center mb-3">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">{SUBSCRIPTION_PLANS.enterprise.name}</h3>
+                      <div className="flex items-baseline justify-center gap-1 mb-1">
                         <span className="text-xl font-bold text-gray-900">Personalizado</span>
                       </div>
-                      <p className="text-sm text-gray-600 mb-1">Más de 10 inmuebles</p>
-                      <p className="text-sm text-gray-500">Precio a medida</p>
+                      <p className="text-sm text-gray-600">Más de 10 inmuebles</p>
+                      <p className="text-xs text-gray-500">Precio a medida</p>
                     </div>
 
-                    <div className="space-y-2 mb-6">
+                    <div className="space-y-1.5 mb-4">
                       {SUBSCRIPTION_PLANS.enterprise.features.map((feature, idx) => (
                         <div key={idx} className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
