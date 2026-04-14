@@ -19,13 +19,15 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     name: "Básico",
     price: 2.90,
     maxProperties: 3,
-    description: "Hasta 3 inmuebles - ~0,97€ por piso",
+    description: "Hasta 3 inmuebles",
     features: [
       "Gestión de inmuebles",
       "Gestión de inquilinos",
       "Control de gastos",
       "Contratos y facturas",
+      "Envío de documentos",
       "Recordatorios",
+      "Informes para Hacienda",
     ],
   },
   professional: {
@@ -33,7 +35,7 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     name: "Profesional",
     price: 6.90,
     maxProperties: 10,
-    description: "Hasta 10 inmuebles - ~0,69€ por piso",
+    description: "Hasta 10 inmuebles",
     features: [
       "Gestión de inmuebles",
       "Gestión de inquilinos",
@@ -49,12 +51,10 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     name: "Empresarial",
     price: 0, // Precio personalizado
     maxProperties: 999, // Ilimitado (número grande)
-    description: "Más de 10 inmuebles - Precio a medida",
+    description: "Más de 10 inmuebles",
     features: [
       "Todo lo incluido",
       "Sin límite de inmuebles",
-      "Soporte prioritario",
-      "Funcionalidades a medida",
     ],
   },
 };
