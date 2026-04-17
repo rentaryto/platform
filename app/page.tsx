@@ -117,34 +117,27 @@ export default function LandingPage() {
         </p>
 
         {/* Toggle Mensual/Anual */}
-        <div className="flex flex-col items-center gap-4 mb-12">
-          <div className="bg-green-50 border-2 border-green-200 rounded-lg px-6 py-3">
-            <p className="text-green-800 font-semibold text-center">
-              🎉 3 meses gratis sin compromiso en cualquier plan
-            </p>
-          </div>
-          <div className="flex items-center justify-center gap-3">
-            <Button
-              variant={billingPeriod === "monthly" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setBillingPeriod("monthly")}
-            >
-              Mensual
-            </Button>
-            <Button
-              variant={billingPeriod === "yearly" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setBillingPeriod("yearly")}
-              className="relative"
-            >
-              Anual
-              {billingPeriod === "yearly" && (
-                <span className="ml-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
-                  Ahorra 2 meses
-                </span>
-              )}
-            </Button>
-          </div>
+        <div className="flex items-center justify-center gap-3 mb-12">
+          <Button
+            variant={billingPeriod === "monthly" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setBillingPeriod("monthly")}
+          >
+            Mensual
+          </Button>
+          <Button
+            variant={billingPeriod === "yearly" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setBillingPeriod("yearly")}
+            className="relative"
+          >
+            Anual
+            {billingPeriod === "yearly" && (
+              <span className="ml-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
+                Ahorra 2 meses
+              </span>
+            )}
+          </Button>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -326,6 +319,14 @@ export default function LandingPage() {
           </Card>
         </div>
 
+        {/* Banner Trial */}
+        <div className="flex justify-center mt-8">
+          <div className="bg-green-50 border-2 border-green-200 rounded-lg px-6 py-3">
+            <p className="text-green-800 font-semibold text-center">
+              🎉 3 meses gratis sin compromiso en cualquier plan
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* CTA */}
