@@ -117,37 +117,39 @@ export default function LandingPage() {
         </p>
 
         {/* Toggle Mensual/Anual */}
-        <div className="flex items-center justify-center gap-3 mb-12">
-          <Button
-            variant={billingPeriod === "monthly" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setBillingPeriod("monthly")}
-          >
-            Mensual
-          </Button>
-          <Button
-            variant={billingPeriod === "yearly" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setBillingPeriod("yearly")}
-            className="relative"
-          >
-            Anual
-            {billingPeriod === "yearly" && (
-              <span className="ml-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
-                Ahorra 2 meses
-              </span>
-            )}
-          </Button>
+        <div className="flex flex-col items-center gap-4 mb-12">
+          <div className="bg-green-50 border-2 border-green-200 rounded-lg px-6 py-3">
+            <p className="text-green-800 font-semibold text-center">
+              🎉 3 meses gratis sin compromiso en cualquier plan
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-3">
+            <Button
+              variant={billingPeriod === "monthly" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setBillingPeriod("monthly")}
+            >
+              Mensual
+            </Button>
+            <Button
+              variant={billingPeriod === "yearly" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setBillingPeriod("yearly")}
+              className="relative"
+            >
+              Anual
+              {billingPeriod === "yearly" && (
+                <span className="ml-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  Ahorra 2 meses
+                </span>
+              )}
+            </Button>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {/* Plan Básico */}
-          <Card className="border-2 border-blue-500 relative hover:shadow-lg transition-shadow">
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                Más popular
-              </span>
-            </div>
+          <Card className="border-2 border-gray-200 relative hover:shadow-lg transition-shadow">
             <CardContent className="pt-8 pb-8">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Básico</h3>
@@ -204,7 +206,7 @@ export default function LandingPage() {
             </div>
 
               <Link href="/signup">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button className="w-full">
                   Empezar gratis
                 </Button>
               </Link>
@@ -212,7 +214,12 @@ export default function LandingPage() {
           </Card>
 
           {/* Plan Profesional */}
-          <Card className="border-2 border-gray-200 relative hover:shadow-lg transition-shadow">
+          <Card className="border-2 border-blue-500 relative hover:shadow-lg transition-shadow">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                Más popular
+              </span>
+            </div>
             <CardContent className="pt-8 pb-8">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Profesional</h3>
@@ -269,7 +276,7 @@ export default function LandingPage() {
               </div>
 
               <Link href="/signup">
-                <Button className="w-full">
+                <Button className="w-full bg-blue-600 hover:bg-blue-700">
                   Empezar gratis
                 </Button>
               </Link>
@@ -319,9 +326,6 @@ export default function LandingPage() {
           </Card>
         </div>
 
-        <p className="text-center text-sm text-gray-600 mt-8">
-          Todos los planes incluyen 3 meses gratis de prueba
-        </p>
       </section>
 
       {/* CTA */}
