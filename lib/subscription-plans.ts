@@ -21,7 +21,7 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     price: 1.80,
     priceYearly: 18.00,
     maxProperties: 1,
-    description: "Hasta 1 inmueble",
+    description: "1 inmueble",
     features: [
       "Gestión de inmuebles",
       "Gestión de inquilinos",

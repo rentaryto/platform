@@ -164,7 +164,7 @@ export default function LandingPage() {
                     </>
                   )}
                 </div>
-                <p className="text-sm text-gray-600 mb-1">Hasta 1 inmueble</p>
+                <p className="text-sm text-gray-600 mb-1">1 inmueble</p>
               </div>
 
               <div className="space-y-3 mb-8">
