@@ -56,12 +56,12 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
   const getDisplayPrice = (planId: PlanType) => {
     const plan = SUBSCRIPTION_PLANS[planId];
     if (billingPeriod === "monthly") {
-      return { price: formatPrice(plan.price), period: "/mes" };
+      return { price: formatPrice(plan.price), period: "/mes + iva" };
     } else {
       const monthlyEquivalent = formatPrice(plan.priceYearly / 12);
       return {
         price: monthlyEquivalent,
-        period: "/mes",
+        period: "/mes + iva",
         yearlyTotal: formatPrice(plan.priceYearly)
       };
     }
@@ -120,7 +120,7 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
                         <span className="text-gray-600 text-sm">{getDisplayPrice("basic").period}</span>
                       </div>
                       {billingPeriod === "yearly" && getDisplayPrice("basic").yearlyTotal && (
-                        <p className="text-xs text-gray-500">Facturado anualmente ({getDisplayPrice("basic").yearlyTotal}€/año)</p>
+                        <p className="text-xs text-gray-500">Facturado anualmente ({getDisplayPrice("basic").yearlyTotal}€/año + iva)</p>
                       )}
                     </div>
                     <p className="text-sm text-gray-600">Hasta {SUBSCRIPTION_PLANS.basic.maxProperties} inmueble</p>
@@ -162,7 +162,7 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
                         <span className="text-gray-600 text-sm">{getDisplayPrice("professional").period}</span>
                       </div>
                       {billingPeriod === "yearly" && getDisplayPrice("professional").yearlyTotal && (
-                        <p className="text-xs text-gray-500">Facturado anualmente ({getDisplayPrice("professional").yearlyTotal}€/año)</p>
+                        <p className="text-xs text-gray-500">Facturado anualmente ({getDisplayPrice("professional").yearlyTotal}€/año + iva)</p>
                       )}
                     </div>
                     <p className="text-sm text-gray-600">Hasta {SUBSCRIPTION_PLANS.professional.maxProperties} inmuebles</p>
