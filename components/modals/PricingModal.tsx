@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, Mail, Sparkles, AlertTriangle } from "lucide-react";
+import { Check, Mail, Sparkles } from "lucide-react";
 import { SUBSCRIPTION_PLANS } from "@/lib/subscription-plans";
 import { ContactModal } from "@/components/modals/ContactModal";
 import type { PlanType } from "@/lib/types";
@@ -73,23 +73,13 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
-              {isTrialUser ? (
-                <div className="bg-orange-100 p-2 rounded-lg">
-                  <AlertTriangle className="h-6 w-6 text-orange-600" />
-                </div>
-              ) : (
-                <div className="bg-blue-100 p-2 rounded-lg">
-                  <Sparkles className="h-6 w-6 text-blue-600" />
-                </div>
-              )}
-              <DialogTitle className="text-xl">
-                {isTrialUser ? "Periodo de prueba finalizado" : "Actualizar plan"}
-              </DialogTitle>
+              <div className="bg-blue-100 p-2 rounded-lg">
+                <Sparkles className="h-6 w-6 text-blue-600" />
+              </div>
+              <DialogTitle className="text-xl">Actualizar plan</DialogTitle>
             </div>
             <DialogDescription className="text-base leading-relaxed pt-2">
-              {isTrialUser
-                ? "Tu periodo de prueba gratuito ha terminado. Elige el plan que mejor se adapte a tus necesidades para continuar gestionando tus inmuebles."
-                : "Elige el plan que mejor se adapte a tus necesidades. Puedes cambiar o cancelar en cualquier momento."}
+              Elige el plan que mejor se adapte a tus necesidades. Puedes cambiar o cancelar en cualquier momento.
             </DialogDescription>
           </DialogHeader>
 
@@ -149,7 +139,7 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
                     className="w-full"
                     onClick={() => handleActivatePlan("basic")}
                   >
-                    {isTrialUser ? "Activar plan" : "Elegir plan"}
+                    Elegir plan
                   </Button>
                 </CardContent>
               </Card>
@@ -191,7 +181,7 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
                     className="w-full bg-blue-600 hover:bg-blue-700"
                     onClick={() => handleActivatePlan("professional")}
                   >
-                    {isTrialUser ? "Activar plan" : "Elegir plan"}
+                    Elegir plan
                   </Button>
                 </CardContent>
               </Card>
