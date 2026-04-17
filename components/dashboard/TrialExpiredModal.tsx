@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, Check, Mail } from "lucide-react";
 import { SUBSCRIPTION_PLANS } from "@/lib/subscription-plans";
 import { ContactModal } from "@/components/modals/ContactModal";
+import type { PlanType } from "@/lib/types";
+
+type BillingPeriod = "monthly" | "yearly";
 
 interface Props {
   open: boolean;
@@ -20,11 +23,31 @@ interface Props {
 
 export function TrialExpiredModal({ open }: Props) {
   const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("yearly");
 
-  const handleActivatePlan = (planPrice: number) => {
+  const formatPrice = (num: number) => num.toFixed(2).replace('.', ',');
+
+  const handleActivatePlan = (planId: PlanType) => {
+    const plan = SUBSCRIPTION_PLANS[planId];
+    const price = billingPeriod === "monthly" ? plan.price : plan.priceYearly;
+    const period = billingPeriod === "monthly" ? "mes" : "año";
     const subject = "Activar plan de Rentaryto";
-    const body = `Hola,%0D%0A%0D%0AMe gustaría activar el plan de ${planPrice}€/mes de Rentaryto.%0D%0A%0D%0AGracias`;
+    const body = `Hola,%0D%0A%0D%0AMe gustaría activar el plan ${plan.name} de ${formatPrice(price)}€/${period} de Rentaryto.%0D%0A%0D%0AGracias`;
     window.location.href = `mailto:info@rentaryto.com?subject=${subject}&body=${body}`;
+  };
+
+  const getDisplayPrice = (planId: PlanType) => {
+    const plan = SUBSCRIPTION_PLANS[planId];
+    if (billingPeriod === "monthly") {
+      return { price: formatPrice(plan.price), period: "/mes + iva" };
+    } else {
+      const monthlyEquivalent = formatPrice(plan.priceYearly / 12);
+      return {
+        price: monthlyEquivalent,
+        period: "/mes + iva",
+        yearlyTotal: formatPrice(plan.priceYearly)
+      };
+    }
   };
 
   return (
@@ -43,18 +66,46 @@ export function TrialExpiredModal({ open }: Props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
 
+          {/* Toggle Mensual/Anual */}
+          <div className="flex items-center justify-center gap-3 my-4">
+            <Button
+              variant={billingPeriod === "monthly" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setBillingPeriod("monthly")}
+            >
+              Mensual
+            </Button>
+            <Button
+              variant={billingPeriod === "yearly" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setBillingPeriod("yearly")}
+              className="relative"
+            >
+              Anual
+              {billingPeriod === "yearly" && (
+                <span className="ml-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  Ahorra 2 meses
+                </span>
+              )}
+            </Button>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-4 my-6">
             {/* Plan Básico */}
             <Card className="border-2 border-gray-200 hover:border-blue-300 transition-colors">
               <CardContent className="pt-6 pb-6">
                 <div className="text-center mb-4">
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{SUBSCRIPTION_PLANS.basic.name}</h3>
-                  <div className="flex items-baseline justify-center gap-1 mb-2">
-                    <span className="text-3xl font-bold text-gray-900">{SUBSCRIPTION_PLANS.basic.price}€</span>
-                    <span className="text-gray-600">/mes</span>
+                  <div className="flex flex-col items-center gap-1 mb-2">
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-3xl font-bold text-gray-900">{getDisplayPrice("basic").price}€</span>
+                      <span className="text-gray-600 text-sm">{getDisplayPrice("basic").period}</span>
+                    </div>
+                    {billingPeriod === "yearly" && getDisplayPrice("basic").yearlyTotal && (
+                      <p className="text-xs text-gray-500">Facturado anualmente ({getDisplayPrice("basic").yearlyTotal}€/año + iva)</p>
+                    )}
                   </div>
-                  <p className="text-xs text-gray-600 mb-1">Hasta {SUBSCRIPTION_PLANS.basic.maxProperties} inmuebles</p>
-                  <p className="text-xs text-gray-500">~0,97€ por piso</p>
+                  <p className="text-xs text-gray-600">Hasta {SUBSCRIPTION_PLANS.basic.maxProperties} inmueble</p>
                 </div>
 
                 <div className="space-y-2 mb-6">
@@ -68,7 +119,7 @@ export function TrialExpiredModal({ open }: Props) {
 
                 <Button
                   className="w-full"
-                  onClick={() => handleActivatePlan(SUBSCRIPTION_PLANS.basic.price)}
+                  onClick={() => handleActivatePlan("basic")}
                 >
                   Activar plan
                 </Button>
@@ -85,12 +136,16 @@ export function TrialExpiredModal({ open }: Props) {
               <CardContent className="pt-6 pb-6">
                 <div className="text-center mb-4">
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{SUBSCRIPTION_PLANS.professional.name}</h3>
-                  <div className="flex items-baseline justify-center gap-1 mb-2">
-                    <span className="text-3xl font-bold text-gray-900">{SUBSCRIPTION_PLANS.professional.price}€</span>
-                    <span className="text-gray-600">/mes</span>
+                  <div className="flex flex-col items-center gap-1 mb-2">
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-3xl font-bold text-gray-900">{getDisplayPrice("professional").price}€</span>
+                      <span className="text-gray-600 text-sm">{getDisplayPrice("professional").period}</span>
+                    </div>
+                    {billingPeriod === "yearly" && getDisplayPrice("professional").yearlyTotal && (
+                      <p className="text-xs text-gray-500">Facturado anualmente ({getDisplayPrice("professional").yearlyTotal}€/año + iva)</p>
+                    )}
                   </div>
-                  <p className="text-xs text-gray-600 mb-1">Hasta {SUBSCRIPTION_PLANS.professional.maxProperties} inmuebles</p>
-                  <p className="text-xs text-gray-500">~0,69€ por piso</p>
+                  <p className="text-xs text-gray-600">Hasta {SUBSCRIPTION_PLANS.professional.maxProperties} inmuebles</p>
                 </div>
 
                 <div className="space-y-2 mb-6">
@@ -104,7 +159,7 @@ export function TrialExpiredModal({ open }: Props) {
 
                 <Button
                   className="w-full bg-blue-600 hover:bg-blue-700"
-                  onClick={() => handleActivatePlan(SUBSCRIPTION_PLANS.professional.price)}
+                  onClick={() => handleActivatePlan("professional")}
                 >
                   Activar plan
                 </Button>
@@ -119,7 +174,7 @@ export function TrialExpiredModal({ open }: Props) {
                   <div className="flex items-baseline justify-center gap-1 mb-2">
                     <span className="text-xl font-bold text-gray-900">Personalizado</span>
                   </div>
-                  <p className="text-xs text-gray-600 mb-1">Más de 10 inmuebles</p>
+                  <p className="text-xs text-gray-600 mb-1">Más de 5 inmuebles</p>
                   <p className="text-xs text-gray-500">Precio a medida</p>
                 </div>
 
