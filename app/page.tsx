@@ -150,17 +150,17 @@ export default function LandingPage() {
                   {billingPeriod === "monthly" ? (
                     <>
                       <div className="flex items-baseline justify-center gap-2">
-                        <span className="text-4xl font-bold text-gray-900">1,90€</span>
+                        <span className="text-4xl font-bold text-gray-900">1,80€</span>
                         <span className="text-gray-600">/mes + iva</span>
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="flex items-baseline justify-center gap-2">
-                        <span className="text-4xl font-bold text-gray-900">1,66€</span>
+                        <span className="text-4xl font-bold text-gray-900">1,50€</span>
                         <span className="text-gray-600">/mes + iva</span>
                       </div>
-                      <p className="text-sm text-gray-500">Facturado anualmente (19,90€/año + iva)</p>
+                      <p className="text-sm text-gray-500">Facturado anualmente (18€/año + iva)</p>
                     </>
                   )}
                 </div>
@@ -220,17 +220,17 @@ export default function LandingPage() {
                   {billingPeriod === "monthly" ? (
                     <>
                       <div className="flex items-baseline justify-center gap-2">
-                        <span className="text-4xl font-bold text-gray-900">4,90€</span>
+                        <span className="text-4xl font-bold text-gray-900">5,40€</span>
                         <span className="text-gray-600">/mes + iva</span>
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="flex items-baseline justify-center gap-2">
-                        <span className="text-4xl font-bold text-gray-900">4,16€</span>
+                        <span className="text-4xl font-bold text-gray-900">4,50€</span>
                         <span className="text-gray-600">/mes + iva</span>
                       </div>
-                      <p className="text-sm text-gray-500">Facturado anualmente (49,90€/año + iva)</p>
+                      <p className="text-sm text-gray-500">Facturado anualmente (54€/año + iva)</p>
                     </>
                   )}
                 </div>
