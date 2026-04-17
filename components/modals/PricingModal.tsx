@@ -26,7 +26,7 @@ interface Props {
 
 export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = false }: Props) {
   const [contactModalOpen, setContactModalOpen] = useState(false);
-  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("yearly");
 
   // Determinar qué planes mostrar
   const planHierarchy: PlanType[] = ["basic", "professional", "enterprise"];
@@ -51,13 +51,19 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
     window.location.href = `mailto:info@rentaryto.com?subject=${subject}&body=${body}`;
   };
 
+  const formatPrice = (num: number) => num.toFixed(2).replace('.', ',');
+
   const getDisplayPrice = (planId: PlanType) => {
     const plan = SUBSCRIPTION_PLANS[planId];
     if (billingPeriod === "monthly") {
-      return { price: plan.price, period: "/mes" };
+      return { price: formatPrice(plan.price), period: "/mes" };
     } else {
-      const monthlyEquivalent = (plan.priceYearly / 12).toFixed(2);
-      return { price: plan.priceYearly, period: "/año", monthly: monthlyEquivalent };
+      const monthlyEquivalent = formatPrice(plan.priceYearly / 12);
+      return {
+        price: monthlyEquivalent,
+        period: "/mes",
+        yearlyTotal: formatPrice(plan.priceYearly)
+      };
     }
   };
 
@@ -113,8 +119,8 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
                         <span className="text-2xl font-bold text-gray-900">{getDisplayPrice("basic").price}€</span>
                         <span className="text-gray-600 text-sm">{getDisplayPrice("basic").period}</span>
                       </div>
-                      {billingPeriod === "yearly" && (
-                        <p className="text-xs text-gray-500">equivale a {getDisplayPrice("basic").monthly}€/mes</p>
+                      {billingPeriod === "yearly" && getDisplayPrice("basic").yearlyTotal && (
+                        <p className="text-xs text-gray-500">Facturado anualmente ({getDisplayPrice("basic").yearlyTotal}€/año)</p>
                       )}
                     </div>
                     <p className="text-sm text-gray-600">Hasta {SUBSCRIPTION_PLANS.basic.maxProperties} inmueble</p>
@@ -155,8 +161,8 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
                         <span className="text-2xl font-bold text-gray-900">{getDisplayPrice("professional").price}€</span>
                         <span className="text-gray-600 text-sm">{getDisplayPrice("professional").period}</span>
                       </div>
-                      {billingPeriod === "yearly" && (
-                        <p className="text-xs text-gray-500">equivale a {getDisplayPrice("professional").monthly}€/mes</p>
+                      {billingPeriod === "yearly" && getDisplayPrice("professional").yearlyTotal && (
+                        <p className="text-xs text-gray-500">Facturado anualmente ({getDisplayPrice("professional").yearlyTotal}€/año)</p>
                       )}
                     </div>
                     <p className="text-sm text-gray-600">Hasta {SUBSCRIPTION_PLANS.professional.maxProperties} inmuebles</p>

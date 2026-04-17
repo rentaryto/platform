@@ -11,7 +11,7 @@ type BillingPeriod = "monthly" | "yearly";
 
 export default function LandingPage() {
   const [contactModalOpen, setContactModalOpen] = useState(false);
-  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("yearly");
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
@@ -147,14 +147,21 @@ export default function LandingPage() {
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Básico</h3>
                 <div className="flex flex-col items-center gap-1 mb-2">
-                  <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-4xl font-bold text-gray-900">
-                      {billingPeriod === "monthly" ? "1,90€" : "19,90€"}
-                    </span>
-                    <span className="text-gray-600">{billingPeriod === "monthly" ? "/mes" : "/año"}</span>
-                  </div>
-                  {billingPeriod === "yearly" && (
-                    <p className="text-sm text-gray-500">equivale a 1,66€/mes</p>
+                  {billingPeriod === "monthly" ? (
+                    <>
+                      <div className="flex items-baseline justify-center gap-2">
+                        <span className="text-4xl font-bold text-gray-900">1,90€</span>
+                        <span className="text-gray-600">/mes</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-baseline justify-center gap-2">
+                        <span className="text-4xl font-bold text-gray-900">1,66€</span>
+                        <span className="text-gray-600">/mes</span>
+                      </div>
+                      <p className="text-sm text-gray-500">Facturado anualmente (19,90€/año)</p>
+                    </>
                   )}
                 </div>
                 <p className="text-sm text-gray-600 mb-1">Hasta 1 inmueble</p>
@@ -210,14 +217,21 @@ export default function LandingPage() {
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Profesional</h3>
                 <div className="flex flex-col items-center gap-1 mb-2">
-                  <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-4xl font-bold text-gray-900">
-                      {billingPeriod === "monthly" ? "4,90€" : "49,90€"}
-                    </span>
-                    <span className="text-gray-600">{billingPeriod === "monthly" ? "/mes" : "/año"}</span>
-                  </div>
-                  {billingPeriod === "yearly" && (
-                    <p className="text-sm text-gray-500">equivale a 4,16€/mes</p>
+                  {billingPeriod === "monthly" ? (
+                    <>
+                      <div className="flex items-baseline justify-center gap-2">
+                        <span className="text-4xl font-bold text-gray-900">4,90€</span>
+                        <span className="text-gray-600">/mes</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-baseline justify-center gap-2">
+                        <span className="text-4xl font-bold text-gray-900">4,16€</span>
+                        <span className="text-gray-600">/mes</span>
+                      </div>
+                      <p className="text-sm text-gray-500">Facturado anualmente (49,90€/año)</p>
+                    </>
                   )}
                 </div>
                 <p className="text-sm text-gray-600 mb-1">Hasta 5 inmuebles</p>
