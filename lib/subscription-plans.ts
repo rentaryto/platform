@@ -7,7 +7,8 @@ export type PlanType = "basic" | "professional" | "enterprise";
 export interface SubscriptionPlan {
   id: PlanType;
   name: string;
-  price: number; // €/mes
+  price: number; // €/mes (mensual)
+  priceYearly: number; // €/año (anual)
   maxProperties: number;
   features: string[];
   description: string;
@@ -17,9 +18,10 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
   basic: {
     id: "basic",
     name: "Básico",
-    price: 2.90,
-    maxProperties: 3,
-    description: "Hasta 3 inmuebles",
+    price: 1.90,
+    priceYearly: 19.90,
+    maxProperties: 1,
+    description: "Hasta 1 inmueble",
     features: [
       "Gestión de inmuebles",
       "Gestión de inquilinos",
@@ -33,9 +35,10 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
   professional: {
     id: "professional",
     name: "Profesional",
-    price: 6.90,
-    maxProperties: 10,
-    description: "Hasta 10 inmuebles",
+    price: 4.90,
+    priceYearly: 49.90,
+    maxProperties: 5,
+    description: "Hasta 5 inmuebles",
     features: [
       "Gestión de inmuebles",
       "Gestión de inquilinos",
@@ -50,8 +53,9 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     id: "enterprise",
     name: "Empresarial",
     price: 0, // Precio personalizado
+    priceYearly: 0, // Precio personalizado
     maxProperties: 999, // Ilimitado (número grande)
-    description: "Más de 10 inmuebles",
+    description: "Más de 5 inmuebles",
     features: [
       "Todo lo incluido",
       "Sin límite de inmuebles",
@@ -72,8 +76,8 @@ export function getPlanById(planId: PlanType): SubscriptionPlan {
  * Obtiene el plan recomendado según el número de propiedades
  */
 export function getRecommendedPlan(propertyCount: number): PlanType {
-  if (propertyCount <= 3) return "basic";
-  if (propertyCount <= 10) return "professional";
+  if (propertyCount <= 1) return "basic";
+  if (propertyCount <= 5) return "professional";
   return "enterprise";
 }
 
@@ -90,4 +94,4 @@ export function canPlanSupportProperties(planId: PlanType, propertyCount: number
  */
 export const TRIAL_DURATION_MONTHS = 3;
 export const DEFAULT_TRIAL_PLAN: PlanType = "basic";
-export const TRIAL_MAX_PROPERTIES = 3; // Trial tiene el mismo límite que plan básico
+export const TRIAL_MAX_PROPERTIES = 1; // Trial tiene el mismo límite que plan básico
