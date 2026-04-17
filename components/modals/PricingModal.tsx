@@ -110,7 +110,12 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
           <div className="grid md:grid-cols-3 gap-4 my-4">
             {/* Plan Básico */}
             {shouldShowPlan("basic") && (
-              <Card className="border-2 border-gray-200 hover:border-blue-300 transition-colors">
+              <Card className="border-2 border-blue-500 hover:border-blue-600 transition-colors relative">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                    Más popular
+                  </span>
+                </div>
                 <CardContent className="pt-5 pb-5">
                   <div className="text-center mb-3">
                     <h3 className="text-lg font-bold text-gray-900 mb-2">{SUBSCRIPTION_PLANS.basic.name}</h3>
@@ -136,7 +141,7 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
                   </div>
 
                   <Button
-                    className="w-full"
+                    className="w-full bg-blue-600 hover:bg-blue-700"
                     onClick={() => handleActivatePlan("basic")}
                   >
                     Elegir plan
@@ -147,12 +152,7 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
 
             {/* Plan Profesional */}
             {shouldShowPlan("professional") && (
-              <Card className="border-2 border-blue-500 hover:border-blue-600 transition-colors relative">
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                    Más popular
-                  </span>
-                </div>
+              <Card className="border-2 border-gray-200 hover:border-blue-300 transition-colors">
                 <CardContent className="pt-5 pb-5">
                   <div className="text-center mb-3">
                     <h3 className="text-lg font-bold text-gray-900 mb-2">{SUBSCRIPTION_PLANS.professional.name}</h3>
@@ -178,7 +178,7 @@ export function PricingModal({ open, onOpenChange, currentPlan, isTrialUser = fa
                   </div>
 
                   <Button
-                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    className="w-full"
                     onClick={() => handleActivatePlan("professional")}
                   >
                     Elegir plan

@@ -142,7 +142,12 @@ export default function LandingPage() {
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {/* Plan Básico */}
-          <Card className="border-2 border-gray-200 relative hover:shadow-lg transition-shadow">
+          <Card className="border-2 border-blue-500 relative hover:shadow-lg transition-shadow">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                Más popular
+              </span>
+            </div>
             <CardContent className="pt-8 pb-8">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Básico</h3>
@@ -199,7 +204,7 @@ export default function LandingPage() {
             </div>
 
               <Link href="/signup">
-                <Button className="w-full">
+                <Button className="w-full bg-blue-600 hover:bg-blue-700">
                   Empezar gratis
                 </Button>
               </Link>
@@ -207,12 +212,7 @@ export default function LandingPage() {
           </Card>
 
           {/* Plan Profesional */}
-          <Card className="border-2 border-blue-500 relative hover:shadow-lg transition-shadow">
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-              <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                Más popular
-              </span>
-            </div>
+          <Card className="border-2 border-gray-200 relative hover:shadow-lg transition-shadow">
             <CardContent className="pt-8 pb-8">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Profesional</h3>
@@ -269,7 +269,7 @@ export default function LandingPage() {
               </div>
 
               <Link href="/signup">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button className="w-full">
                   Empezar gratis
                 </Button>
               </Link>
