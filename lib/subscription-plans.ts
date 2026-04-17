@@ -18,8 +18,8 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
   basic: {
     id: "basic",
     name: "Básico",
-    price: 1.90,
-    priceYearly: 19.90,
+    price: 1.80,
+    priceYearly: 18.00,
     maxProperties: 1,
     description: "Hasta 1 inmueble",
     features: [
@@ -35,8 +35,8 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
   professional: {
     id: "professional",
     name: "Profesional",
-    price: 4.90,
-    priceYearly: 49.90,
+    price: 5.40,
+    priceYearly: 54.00,
     maxProperties: 5,
     description: "Hasta 5 inmuebles",
     features: [

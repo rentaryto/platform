@@ -21,7 +21,7 @@ export function ContactModal({ open, onOpenChange }: Props) {
           </div>
           <div className="text-center space-y-2">
             <p className="text-gray-600">
-              Para planes personalizados con más de 10 inmuebles, escríbenos a:
+              Para planes personalizados con más de 5 inmuebles, escríbenos a:
             </p>
             <a
               href="mailto:info@rentaryto.com"

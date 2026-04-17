@@ -37,7 +37,7 @@ export function UpgradeBanner({ subscription }: Props) {
                   </Badge>
                 </div>
                 <p className="text-sm text-gray-600">
-                  ¿Necesitas más inmuebles? Mejora a Profesional y gestiona hasta 10 inmuebles
+                  ¿Necesitas más inmuebles? Mejora a Profesional y gestiona hasta 5 inmuebles
                 </p>
               </div>
             </div>
