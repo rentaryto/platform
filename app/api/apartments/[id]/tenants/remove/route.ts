@@ -13,7 +13,7 @@ export async function POST(
   }
 
   try {
-    const body = await request.json()
+    const body = await request.json().catch(() => ({}))
     const { leaseEndDate } = body
 
     // Verify apartment ownership

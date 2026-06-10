@@ -110,9 +110,19 @@ export async function DELETE(
       return NextResponse.json({ error: 'Inmueble no encontrado' }, { status: 404 })
     }
 
-    await prisma.apartment.delete({
-      where: { id: params.id },
-    })
+    // Delete related rows first (no DB cascade configured), then the apartment.
+    // Tenants are kept as unassigned (apartmentId = null) to preserve history.
+    await prisma.$transaction([
+      prisma.tenant.updateMany({
+        where: { apartmentId: params.id },
+        data: { apartmentId: null },
+      }),
+      prisma.recurringExpense.deleteMany({ where: { apartmentId: params.id } }),
+      prisma.unexpectedExpense.deleteMany({ where: { apartmentId: params.id } }),
+      prisma.document.deleteMany({ where: { apartmentId: params.id } }),
+      prisma.reminder.deleteMany({ where: { apartmentId: params.id } }),
+      prisma.apartment.delete({ where: { id: params.id } }),
+    ])
 
     return NextResponse.json({ success: true })
   } catch (error) {
