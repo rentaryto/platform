@@ -33,5 +33,7 @@ export async function logout(): Promise<void> {
     console.error('Logout error:', error);
   } finally {
     removeUser();
+    // Full reload so cached queries from this session are discarded
+    window.location.replace("/login");
   }
 }

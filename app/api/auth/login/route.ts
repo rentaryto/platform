@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { isValidEmail } from '@/lib/validation'
 import { calculateTrialEndDate } from '@/lib/subscription-utils'
 import { DEFAULT_TRIAL_PLAN, TRIAL_MAX_PROPERTIES } from '@/lib/subscription-plans'
+import { LAST_ACTIVITY_COOKIE, lastActivityCookieOptions, nowInSeconds } from '@/lib/session-policy'
 
 export async function POST(request: NextRequest) {
   try {
@@ -81,7 +82,10 @@ export async function POST(request: NextRequest) {
       console.log('[LOGIN] Created new user with trial subscription:', user.id, 'max properties:', TRIAL_MAX_PROPERTIES)
     }
 
-    return NextResponse.json({ user })
+    const response = NextResponse.json({ user })
+    // Starts the inactivity window checked by middleware
+    response.cookies.set(LAST_ACTIVITY_COOKIE, String(nowInSeconds()), lastActivityCookieOptions)
+    return response
   } catch (error) {
     console.error('Login error:', error)
     return NextResponse.json({ error: 'Error al iniciar sesión' }, { status: 500 })

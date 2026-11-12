@@ -75,7 +75,6 @@ export default function SettingsPage() {
       await queryClient.invalidateQueries({ queryKey: ["subscription"] });
       setTimeout(() => {
         logout();
-        router.replace("/login");
       }, 2000);
     },
     onError: (error: Error) => {

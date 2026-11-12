@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { LayoutDashboard, Users, Home, FileText, LogOut, Clock, Building2, Sparkles, TrendingUp, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,6 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const user = getUser();
   const [pricingModalOpen, setPricingModalOpen] = useState(false);
 
@@ -36,7 +35,6 @@ export function Sidebar() {
 
   const handleLogout = async () => {
     await logout();
-    router.replace("/login");
   };
 
   return (

@@ -30,6 +30,8 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
 
   if (response.status === 401) {
     if (typeof window !== "undefined") {
+      // Server session is gone: drop the cached user so /login shows the form
+      localStorage.removeItem("rentaryto_user");
       window.location.href = "/login";
     }
     throw new Error("No autorizado");

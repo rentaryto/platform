@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { authApi } from "@/lib/api";
-import { setUser, isAuthenticated } from "@/lib/auth";
+import { setUser, removeUser } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,17 +27,21 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [expired, setExpired] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      router.replace("/dashboard");
-    }
+    // Middleware redirects valid sessions to /dashboard, so reaching this
+    // page means there is no server session: clear any stale cached user.
+    removeUser();
 
     // Check if user just confirmed email
     if (searchParams.get('confirmed') === 'true') {
       setConfirmed(true);
     }
-  }, [router, searchParams]);
+    if (searchParams.get('expired') === 'true') {
+      setExpired(true);
+    }
+  }, [searchParams]);
 
   const {
     register,
@@ -88,6 +92,11 @@ function LoginForm() {
           {confirmed && (
             <div className="mb-4 bg-green-50 border border-green-200 text-green-700 text-sm rounded-md p-3">
               ✅ Email confirmado correctamente. Ya puedes iniciar sesión.
+            </div>
+          )}
+          {expired && (
+            <div className="mb-4 bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-md p-3">
+              Tu sesión ha caducado. Vuelve a iniciar sesión.
             </div>
           )}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, Home, FileText, UserCircle, LogOut, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getUser, logout } from "@/lib/auth";
@@ -19,14 +19,12 @@ const navItems = [
 
 export function MobileNav() {
   const pathname = usePathname();
-  const router = useRouter();
   const user = getUser();
   const [profileOpen, setProfileOpen] = useState(false);
 
   const handleLogout = async () => {
-    await logout();
     setProfileOpen(false);
-    router.replace("/login");
+    await logout();
   };
 
   return (
